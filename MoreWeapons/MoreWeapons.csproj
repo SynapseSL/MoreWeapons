@@ -73,10 +73,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configs\SniperConfig.cs" />
     <Compile Include="CustomItemType.cs" />
     <Compile Include="Configs\Scp127Config.cs" />
     <Compile Include="Configs\ShotGunConfig.cs" />
     <Compile Include="Configs\GrenadeLauncherConfig.cs" />
+    <Compile Include="Handlers\SniperHandler.cs" />
     <Compile Include="Handlers\Scp127Handler.cs" />
     <Compile Include="Handlers\ShotGunHandler.cs" />
     <Compile Include="Handlers\GrenadeLauncherHandler.cs" />

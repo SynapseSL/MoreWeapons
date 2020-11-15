@@ -7,8 +7,10 @@
         ShotGun,
         Sniper,
         Scp127,
-        XlMedkit,
-        MolotovCocktail,
-        MedkitGun,
+
+        //Coming in the Future :D
+        //XlMedkit,
+        //MolotovCocktail,
+        //MedkitGun,
     }
 }

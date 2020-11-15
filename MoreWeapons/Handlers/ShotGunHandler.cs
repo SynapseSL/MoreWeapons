@@ -4,6 +4,7 @@ using Mirror;
 
 namespace MoreWeapons.Handlers
 {
+    //Original Plugin from which this Weapon is a Port: https://dev.azure.com/Killers0992/_git/ItemManager?path=%2FShotGun%2FShotgun.cs
     public class ShotGunHandler
     {
         public ShotGunHandler()

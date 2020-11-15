@@ -25,7 +25,7 @@ namespace MoreWeapons.Handlers
 
         private void OnPickup(Synapse.Api.Events.SynapseEventArguments.PlayerPickUpItemEventArgs ev)
         {
-            if (ev.Item.ID == 39)
+            if (ev.Item.ID == (int)CustomItemType.Scp127)
                 ev.Player.GiveTextHint("You have picked up Scp-127");
         }
 
@@ -37,7 +37,7 @@ namespace MoreWeapons.Handlers
         {
             for(; ; )
             {
-                foreach (var item in Map.Get.Items.Where(x => x.ID == 39))
+                foreach (var item in Map.Get.Items.Where(x => x.ID == (int)CustomItemType.Scp127))
                 {
                     if (item.Durabillity >= PluginClass.Scp127Config.MaxAmmo) continue;
 

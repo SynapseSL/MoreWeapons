@@ -23,13 +23,13 @@ namespace MoreWeapons.Handlers
 
         private void OnPickup(Synapse.Api.Events.SynapseEventArguments.PlayerPickUpItemEventArgs ev)
         {
-            if (ev.Item.ID == 37)
+            if (ev.Item.ID == (int)CustomItemType.GrenadeLauncher)
                 ev.Player.GiveTextHint("You have picked up a GrenadeLauncher");
         }
 
         private void OnReload(Synapse.Api.Events.SynapseEventArguments.PlayerReloadEventArgs ev)
         {
-            if(ev.Item.ID == 37)
+            if(ev.Item.ID == (int)CustomItemType.GrenadeLauncher)
             {
                 ev.Allow = false;
 
@@ -50,7 +50,7 @@ namespace MoreWeapons.Handlers
 
         private void Shoot(Synapse.Api.Events.SynapseEventArguments.PlayerShootEventArgs ev)
         {
-            if(ev.Weapon.ID == 37)
+            if(ev.Weapon.ID == (int)CustomItemType.GrenadeLauncher)
             {
                 ev.Allow = false;
                 ev.Weapon.Durabillity--;

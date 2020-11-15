@@ -71,7 +71,7 @@ namespace MoreWeapons.Handlers
                     var hitbox = hits[i].collider.GetComponent<HitboxIdentity>();
                     if(hitbox != null)
                     {
-                        var target = hits[i].collider.GetComponent<Synapse.Api.Player>();
+                        var target = hits[i].collider.GetComponentInParent<Synapse.Api.Player>();
 
                         if (component.GetShootPermission(target.ClassManager))
                         {
@@ -103,7 +103,7 @@ namespace MoreWeapons.Handlers
                     component.RpcPlaceDecal(false, component.curWeapon, hits[i].point + hits[i].normal * 0.01f, Quaternion.FromToRotation(Vector3.up, hits[i].normal));
                 }
 
-                for (int i = 0; i < 3; i++)
+                for (int i = 0; i < bullets; i++)
                     component.RpcConfirmShot(confirm, component.curWeapon);
 
                 ev.Weapon.Durabillity -= bullets;

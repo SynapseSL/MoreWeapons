@@ -84,6 +84,8 @@ namespace MoreWeapons.Handlers
                                 case HitBoxType.LEG: damage = PluginClass.SGConfig.DamageLeg; break;
                                 default: damage = PluginClass.SGConfig.DamageBody; break;
                             }
+                            if (target.RoleType == RoleType.Scp106)
+                                damage /= 10;
 
                             target.Hurt(damage, DamageTypes.Mp7, ev.Player);
                             component.RpcPlaceDecal(true, (sbyte)target.ClassManager.Classes.SafeGet(target.RoleType).bloodType, hits[i].point + hits[i].normal * 0.01f, Quaternion.FromToRotation(Vector3.up, hits[i].normal));

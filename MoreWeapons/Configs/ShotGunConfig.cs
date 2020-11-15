@@ -17,5 +17,7 @@ namespace MoreWeapons.Configs
         public int DamageLeg = 5;
 
         public int DamageBody = 8;
+
+        public int Damage106 = 5;
     }
 }

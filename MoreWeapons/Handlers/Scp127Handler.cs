@@ -52,6 +52,10 @@ namespace MoreWeapons.Handlers
 
         private void OnRestart() => MEC.Timing.KillCoroutines(coroutine);
 
-        private void OnReload(Synapse.Api.Events.SynapseEventArguments.PlayerReloadEventArgs ev) => ev.Allow = false;
+        private void OnReload(Synapse.Api.Events.SynapseEventArguments.PlayerReloadEventArgs ev)
+        {
+            if(ev.Item.ID == (int)CustomItemType.Scp127)
+                ev.Allow = false;
+        }
     }
 }

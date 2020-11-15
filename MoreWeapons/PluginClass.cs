@@ -5,7 +5,7 @@ namespace MoreWeapons
     [PluginInformation(
         Name = "MoreWeapons",
         Author = "Dimenzio",
-        Description = "A Command that adds new Weapons to the Game",
+        Description = "A Plugin that adds new Weapons to the Game",
         LoadPriority = 100,
         SynapseMajor = SynapseController.SynapseMajor,
         SynapseMinor = SynapseController.SynapseMinor,

@@ -5,6 +5,10 @@
         Tranquilizer = 36,
         GrenadeLauncher,
         ShotGun,
-        Scp127
+        Sniper,
+        Scp127,
+        XlMedkit,
+        MolotovCocktail,
+        MedkitGun,
     }
 }

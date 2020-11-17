@@ -41,7 +41,7 @@ Description: A Sniper
 ID: 40 
 Name: Scp-127
 BasedItemType: GunProject90
-Description: A weapon which regenerate ammo over time but can't be reloaded by manually
+Description: A weapon which regenerate ammo over time but can't be reloaded manually
 ```
 **XLMedkit**
 ```

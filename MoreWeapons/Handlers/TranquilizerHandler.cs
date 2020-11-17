@@ -35,17 +35,19 @@ namespace MoreWeapons.Handlers
 
         private void OnReload(Synapse.Api.Events.SynapseEventArguments.PlayerReloadEventArgs ev)
         {
-            if(ev.Item.ID == (int)CustomItemType.Tranquilizer)
+            if (ev.Item.ID == (int)CustomItemType.Tranquilizer)
             {
-                if (!PluginClass.TzConfig.Reloadable)
-                {
-                    ev.Allow = false;
-                    return;
-                }
-
-                if (ev.Player.Ammo9 >= 18) return;
-
                 ev.Allow = false;
+
+                if (ev.Item.Durabillity >= PluginClass.TzConfig.MagazineSize) return;
+
+                var reloadAmount = PluginClass.TzConfig.MagazineSize - ev.Item.Durabillity;
+
+                if (ev.Player.Ammo9 < reloadAmount * PluginClass.TzConfig.AmooNeededForOneShoot)
+                    reloadAmount = ev.Player.Ammo9 / PluginClass.TzConfig.AmooNeededForOneShoot;
+
+                ev.Item.Durabillity += reloadAmount;
+                ev.Player.Ammo9 -= (uint)reloadAmount * (uint)PluginClass.TzConfig.AmooNeededForOneShoot;
             }
         }
 
@@ -53,11 +55,10 @@ namespace MoreWeapons.Handlers
         {
             if(ev.Weapon.ID == (int)CustomItemType.Tranquilizer)
             {
-                ev.Weapon.Durabillity = 0;
-
                 if (ev.Target != null)
                 {
                     ev.Target.GetComponent<TranquilizerPlayerScript>().Stun();
+                    ev.Weapon.Durabillity--;
                     ev.Allow = false;
                 }
             }

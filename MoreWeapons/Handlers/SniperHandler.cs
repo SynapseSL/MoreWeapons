@@ -36,8 +36,6 @@ namespace MoreWeapons.Handlers
 
                 var reloadAmount = PluginClass.SnConfig.MagazineSize - ev.Item.Durabillity;
 
-                if(ev.Player.Ammo5 < reloadAmount * PluginClass.SnConfig.AmooNeededForOneShoot)
-
                 if (ev.Player.Ammo5 < reloadAmount * PluginClass.SnConfig.AmooNeededForOneShoot)
                     reloadAmount = ev.Player.Ammo5 / PluginClass.SnConfig.AmooNeededForOneShoot;
 

@@ -9,8 +9,8 @@
         Scp127,
         XlMedkit,
 
-        //Coming in the Future :D
-        //Maybe: MolotovCocktail,
+        //Coming maybe in the Future :D
+        //MolotovCocktail,
         //MedkitGun,
         //Scp275
         //Scp714

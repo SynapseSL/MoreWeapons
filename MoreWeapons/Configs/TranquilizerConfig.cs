@@ -6,6 +6,12 @@ namespace MoreWeapons.Configs
 {
     public class TranquilizerConfig : AbstractConfigSection
     {
+        [Description("The Amount of bullets that can be in the Tranquilizer")]
+        public int MagazineSize = 1;
+
+        [Description("The Ammount of Ammo9 needed to reload one tranquilizer bullet")]
+        public int AmooNeededForOneShoot = 10;
+
         [Description("The Maximal Amount of time a Player can be stuned")]
         public float MaxStunTime = 15f;
 

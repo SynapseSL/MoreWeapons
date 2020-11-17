@@ -39,7 +39,7 @@ namespace MoreWeapons.Handlers
             {
                 ev.Allow = false;
 
-                if (ev.Item.Durabillity >= PluginClass.TzConfig.MagazineSize) return;
+                if (ev.Item.Durabillity >= PluginClass.TzConfig.MagazineSize || PluginClass.TzConfig.Reloadable) return;
 
                 var reloadAmount = PluginClass.TzConfig.MagazineSize - ev.Item.Durabillity;
 

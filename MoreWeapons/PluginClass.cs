@@ -25,12 +25,17 @@ namespace MoreWeapons
         [Config(section = "Sniper")]
         public static Configs.SniperConfig SnConfig;
 
+        [Config(section = "Tranquilizer")]
+        public static Configs.TranquilizerConfig TzConfig;
+
         public override void Load()
         {
             new Handlers.GrenadeLauncherHandler();
             new Handlers.ShotGunHandler();
             new Handlers.SniperHandler();
             new Handlers.Scp127Handler();
+            new Handlers.XlMedkitHandler();
+            new Handlers.Tranquilizer();
         }
     }
 }

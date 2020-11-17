@@ -5,11 +5,11 @@ namespace MoreWeapons
     [PluginInformation(
         Name = "MoreWeapons",
         Author = "Dimenzio",
-        Description = "A Plugin that adds new Weapons to the Game",
+        Description = "A Plugin that adds new Weapons & Items to the Game",
         LoadPriority = 100,
         SynapseMajor = SynapseController.SynapseMajor,
         SynapseMinor = SynapseController.SynapseMinor,
-        SynapsePatch = 3
+        SynapsePatch = SynapseController.SynapsePatch
         )]
     public class PluginClass : AbstractPlugin
     {

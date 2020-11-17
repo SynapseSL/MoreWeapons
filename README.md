@@ -56,4 +56,4 @@ Description: A medkit that you can use twice
 3. Restart/Start your server.
 
 ## Warning
-If you are using the old Tranquilizer Plugin you have to remove it or bugs may occure
+If you are using the old Tranquilizer Plugin you have to remove it and delete the tranquilizer config section or bugs may occure

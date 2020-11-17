@@ -35,7 +35,7 @@ namespace MoreWeapons
             new Handlers.SniperHandler();
             new Handlers.Scp127Handler();
             new Handlers.XlMedkitHandler();
-            new Handlers.Tranquilizer();
+            new Handlers.TranquilizerHandler();
         }
     }
 }

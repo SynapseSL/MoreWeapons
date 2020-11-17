@@ -10,7 +10,7 @@
         XlMedkit,
 
         //Coming in the Future :D
-        //MolotovCocktail,
+        //Maybe: MolotovCocktail,
         //MedkitGun,
         //Scp275
         //Scp714

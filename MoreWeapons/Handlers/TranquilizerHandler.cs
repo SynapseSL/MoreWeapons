@@ -7,9 +7,9 @@ using UnityEngine;
 
 namespace MoreWeapons.Handlers
 {
-    public class Tranquilizer
+    public class TranquilizerHandler
     {
-        public Tranquilizer()
+        public TranquilizerHandler()
         {
             Server.Get.ItemManager.RegisterCustomItem(new Synapse.Api.Items.CustomItemInformation
             {
@@ -23,6 +23,14 @@ namespace MoreWeapons.Handlers
             Server.Get.Events.Player.PlayerDropItemEvent += OnDrop;
             Server.Get.Events.Player.PlayerShootEvent += OnShoot;
             Server.Get.Events.Player.PlayerReloadEvent += OnReload;
+            Server.Get.Events.Player.PlayerItemUseEvent += OnItem;
+        }
+
+        private void OnItem(Synapse.Api.Events.SynapseEventArguments.PlayerItemInteractEventArgs ev)
+        {
+            if (!ev.Player.GetComponent<TranquilizerPlayerScript>().Stuned) return;
+
+            ev.Allow = false;
         }
 
         private void OnReload(Synapse.Api.Events.SynapseEventArguments.PlayerReloadEventArgs ev)

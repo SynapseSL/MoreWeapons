@@ -79,7 +79,7 @@
     <Compile Include="Configs\Scp127Config.cs" />
     <Compile Include="Configs\ShotGunConfig.cs" />
     <Compile Include="Configs\GrenadeLauncherConfig.cs" />
-    <Compile Include="Handlers\Tranquilizer.cs" />
+    <Compile Include="Handlers\TranquilizerHandler.cs" />
     <Compile Include="Handlers\XlMedkitHandler.cs" />
     <Compile Include="Handlers\SniperHandler.cs" />
     <Compile Include="Handlers\Scp127Handler.cs" />

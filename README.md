@@ -6,7 +6,7 @@ MoreWeapons is a plugin that adds many new weapons & items to the Game.
 * Original [ShotGun](https://dev.azure.com/Killers0992/_git/ItemManager?path=%2FShotGun%2FShotgun.cs) plugin by Killer0992
 
 ## CustomItems
-You can get the CustomItems with the command `giveitem playerid itemid` or with other Plugins like [CustomLoadouts](https://github.com/AlmightyLks/CustomLoadout)
+You can get the CustomItems with the command `giveitem playerid itemid` or with other Plugins like [CustomLoadout](https://github.com/AlmightyLks/CustomLoadout) or [ItemSpawner](https://github.com/GrafDimenzio/ItemSpawner)
 
 **Tranquilizer**
 ```
@@ -41,7 +41,7 @@ Description: A Sniper
 ID: 40 
 Name: Scp-127
 BasedItemType: GunProject90
-Description: A weapon which regenerate ammo over time but can't be reloaded by manually
+Description: A weapon which regenerate ammo over time but can't be reloaded manually
 ```
 **XLMedkit**
 ```

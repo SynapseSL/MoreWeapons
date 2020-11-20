@@ -9,7 +9,8 @@ namespace MoreWeapons
         LoadPriority = 100,
         SynapseMajor = SynapseController.SynapseMajor,
         SynapseMinor = SynapseController.SynapseMinor,
-        SynapsePatch = SynapseController.SynapsePatch
+        SynapsePatch = SynapseController.SynapsePatch,
+        Version = "1.0.1"
         )]
     public class PluginClass : AbstractPlugin
     {

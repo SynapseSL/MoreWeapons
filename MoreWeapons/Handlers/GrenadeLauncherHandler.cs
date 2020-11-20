@@ -58,7 +58,7 @@ namespace MoreWeapons.Handlers
                 var component = ev.Player.GetComponent<Grenades.GrenadeManager>();
                 var component2 = Object.Instantiate(component.availableGrenades[0].grenadeInstance).GetComponent<Grenades.Grenade>();
                 var velocity = (ev.TargetPosition - ev.Player.Position) * PluginClass.GLConfig.ForceMultiplier;
-                component2.FullInitData(component, ev.Player.CameraReference.TransformPoint(component2.throwStartPositionOffset), Quaternion.Euler(component2.throwStartAngle), velocity, component2.throwAngularVelocity);
+                component2.FullInitData(component, ev.Player.CameraReference.TransformPoint(component2.throwStartPositionOffset), Quaternion.Euler(component2.throwStartAngle), velocity, component2.throwAngularVelocity,ev.Player.Team);
                 component2.NetworkfuseTime = NetworkTime.time + (double)PluginClass.GLConfig.GrenadeFuseTime;
                 NetworkServer.Spawn(component2.gameObject);
             }

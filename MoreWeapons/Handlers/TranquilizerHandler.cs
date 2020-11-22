@@ -119,6 +119,12 @@ namespace MoreWeapons.Handlers
             Player.GodMode = false;
             Player.Position = pos;
             Stuned = false;
+
+            if (Map.Get.Nuke.Detonated)
+            {
+                yield return Timing.WaitForSeconds(0.1f);
+                Player.Hurt(99999);
+            }
         }
     }
 }

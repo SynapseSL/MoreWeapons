@@ -22,6 +22,8 @@ namespace MoreWeapons.Handlers
         {
             if (ev.Killer == null) return;
 
+            if (ev.Killer.ItemInHand == null) return;
+
             if (ev.Killer.ItemInHand.ID == (int)CustomItemType.Sniper && ev.HitInfo.GetDamageType() == DamageTypes.E11StandardRifle)
                 ev.DamageAmount = ev.Victim.RoleType == RoleType.Scp106 ? PluginClass.SnConfig.Damage / 10f : PluginClass.SnConfig.Damage;
         }

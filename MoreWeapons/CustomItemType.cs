@@ -8,13 +8,13 @@
         Sniper,
         Scp127,
         XlMedkit,
+        Scp1499
 
         //Coming maybe in the Future :D
         //MolotovCocktail,
         //MedkitGun,
         //Scp275
         //Scp714
-        //Scp1499
         //Scp284
         //C4
     }

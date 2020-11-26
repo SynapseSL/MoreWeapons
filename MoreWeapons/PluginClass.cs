@@ -29,6 +29,9 @@ namespace MoreWeapons
         [Config(section = "Tranquilizer")]
         public static Configs.TranquilizerConfig TzConfig;
 
+        [Config(section = "Scp1499")]
+        public static Configs.Scp1499Config Scp1499Config;
+
         public override void Load()
         {
             new Handlers.GrenadeLauncherHandler();
@@ -37,6 +40,7 @@ namespace MoreWeapons
             new Handlers.Scp127Handler();
             new Handlers.XlMedkitHandler();
             new Handlers.TranquilizerHandler();
+            new Handlers.Scp1499Handler();
         }
     }
 }

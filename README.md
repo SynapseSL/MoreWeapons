@@ -50,6 +50,15 @@ Name: XLMedkit
 BasedItemType: Medkit
 Description: A medkit that you can use twice
 ```
+**Scp1499**
+```
+ID: 42
+Name: Scp1499
+BasedItemType: Scp268
+Description: A mask which brings you to a other dimension
+```
+
+
 ## Installation
 1. [Install Synapse](https://github.com/SynapseSL/Synapse/wiki#hosting-guides)
 2. Place the MoreWeapons.dll file that you can download [here](https://github.com/SynapseSL/MoreWeapons/releases) in your plugin directory

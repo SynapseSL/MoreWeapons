@@ -10,7 +10,7 @@ namespace MoreWeapons
         SynapseMajor = SynapseController.SynapseMajor,
         SynapseMinor = SynapseController.SynapseMinor,
         SynapsePatch = SynapseController.SynapsePatch,
-        Version = "1.0.2"
+        Version = "1.1.0"
         )]
     public class PluginClass : AbstractPlugin
     {

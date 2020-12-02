@@ -63,15 +63,20 @@ namespace MoreWeapons.Handlers
                 var grenade = Map.Get.SpawnGrenade(pos, velocity, PluginClass.GLConfig.GrenadeFuseTime, Synapse.Api.Enum.GrenadeType.Grenade, ev.Player);
 
                 if (PluginClass.GLConfig.ExplodeOnCollison)
-                    grenade.gameObject.AddComponent<ExplodeScript>();
+                {
+                    var script = grenade.gameObject.AddComponent<ExplodeScript>();
+                    script.owner = ev.Player.gameObject;
+                }
             }
         }
 
         public class ExplodeScript : MonoBehaviour
         {
+            public GameObject owner;
+
             public void OnCollisionEnter(Collision col)
             {
-                if (col.gameObject.GetComponent<Grenades.Grenade>() != null) return;
+                if (col.gameObject == owner || col.gameObject.GetComponent<Grenades.Grenade>() != null) return;
                 GetComponent<Grenades.Grenade>().NetworkfuseTime = 0.10000000149011612;
             }
         }

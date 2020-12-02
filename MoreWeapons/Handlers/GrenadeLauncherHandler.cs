@@ -69,7 +69,11 @@ namespace MoreWeapons.Handlers
 
         public class ExplodeScript : MonoBehaviour
         {
-            public void OnCollisionEnter(Collision col) => GetComponent<Grenades.Grenade>().NetworkfuseTime = 0.10000000149011612;
+            public void OnCollisionEnter(Collision col)
+            {
+                if (col.gameObject.GetComponent<Grenades.Grenade>() != null) return;
+                GetComponent<Grenades.Grenade>().NetworkfuseTime = 0.10000000149011612;
+            }
         }
     }
 }

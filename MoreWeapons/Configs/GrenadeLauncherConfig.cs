@@ -17,7 +17,7 @@ namespace MoreWeapons.Configs
         [Description("After what amount of time the grenades Explodes")]
         public float GrenadeFuseTime = 0.75f;
 
-        [Description("If Enabled the Grenade will Explode as soon as she hits any object")]
+        [Description("If Enabled the Grenade will Explode as soon as it hits any object")]
         public bool ExplodeOnCollison = true;
     }
 }

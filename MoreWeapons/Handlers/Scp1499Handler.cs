@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Synapse;
-using Synapse.Config;
 using MEC;
 using UnityEngine;
 
@@ -8,8 +7,6 @@ namespace MoreWeapons.Handlers
 {
     public class Scp1499Handler
     {
-        private readonly SerializedMapPoint stationposition = new SerializedMapPoint("HCZ_049", -6.5f, 263.5f, 24f);
-
         public Scp1499Handler()
         {
             Server.Get.ItemManager.RegisterCustomItem(new Synapse.Api.Items.CustomItemInformation
@@ -22,18 +19,11 @@ namespace MoreWeapons.Handlers
             Server.Get.Events.Player.PlayerPickUpItemEvent += OnPickup;
             Server.Get.Events.Player.PlayerItemUseEvent += OnUse;
             Server.Get.Events.Player.LoadComponentsEvent += OnLoad;
-            Server.Get.Events.Round.WaitingForPlayersEvent += OnWaiting;
             Server.Get.Events.Player.PlayerSetClassEvent += OnSetClass;
         }
 
         private void OnSetClass(Synapse.Api.Events.SynapseEventArguments.PlayerSetClassEventArgs ev) 
             => ev.Player.GetComponent<Scp1499PlayerScript>().IsInDimension = false;
-
-        private void OnWaiting()
-        {
-            var point = stationposition.Parse();
-            SynapseController.Server.Map.CreateWorkStation(point.Position,point.Room.GameObject.transform.rotation.eulerAngles,new Vector3(3f,3f,0.1f));
-        }
 
         private void OnLoad(Synapse.Api.Events.SynapseEventArguments.LoadComponentEventArgs ev)
         {

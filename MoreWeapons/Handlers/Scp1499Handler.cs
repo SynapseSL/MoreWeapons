@@ -60,6 +60,12 @@ namespace MoreWeapons.Handlers
 
         public void Use1499()
         {
+            if(player.Zone == Synapse.Api.Enum.ZoneType.Pocket)
+            {
+                player.GiveTextHint("You can't use it right now");
+                return;
+            }
+
             if (IsInDimension)
             {
                 player.Position = OldPosition;

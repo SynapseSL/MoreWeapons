@@ -2,7 +2,7 @@
 {
     public enum CustomItemType : int
     {
-        Tranquilizer = 36,
+        Tranquilizer = 50,
         GrenadeLauncher,
         ShotGun,
         Sniper,

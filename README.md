@@ -10,49 +10,49 @@ You can get the CustomItems with the command `giveitem playerid itemid` or with 
 
 **Tranquilizer**
 ```
-ID: 36
+ID: 50
 Name: Tranquilizer
 BasedItemType: GunUSP
 Description: A Weapon which can stun other beings
 ```
 **GrenadeLauncher**
 ```
-ID: 37
+ID: 51
 Name: GrenadeLauncher
 BasedItemType: GunLogicer
 Description: A weapon which shoots grenades
 ```
 **ShotGun**
 ```
-ID: 38
+ID: 52
 Name: ShotGun
 BasedItemType: GunUSP
 Description: A weapon which shoots multiple bullets
 ```
 **Sniper**
 ```
-ID: 39
+ID: 53
 Name: Sniper
 BasedItemType: GunE11SR
 Description: A Sniper
 ```
 **Scp-127**
 ```
-ID: 40 
+ID: 54 
 Name: Scp-127
 BasedItemType: GunProject90
 Description: A weapon which regenerate ammo over time but can't be reloaded manually
 ```
 **XLMedkit**
 ```
-ID: 41
+ID: 55
 Name: XLMedkit
 BasedItemType: Medkit
 Description: A medkit that you can use twice
 ```
 **Scp1499**
 ```
-ID: 42
+ID: 56
 Name: Scp1499
 BasedItemType: Scp268
 Description: A mask which brings you to a other dimension

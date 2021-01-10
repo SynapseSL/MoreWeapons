@@ -58,11 +58,7 @@ namespace MoreWeapons.Handlers
         {
             if(ev.CurrentItem?.ID == (int)CustomItemType.Scp1499 && ev.State == Synapse.Api.Events.SynapseEventArguments.ItemInteractState.Finalizing)
             {
-                if (ev.Player.GetComponent<Scp1499PlayerScript>().Use1499())
-                {
-                    ev.Player.VanillaInventory._cawi.usableCooldowns[3] = PluginClass.Scp1499Config.Cooldown;
-                    ev.Player.VanillaInventory._cawi.RpcSetCooldown(3, PluginClass.Scp1499Config.Cooldown);
-                }
+                ev.Player.GetComponent<Scp1499PlayerScript>().Use1499();
                 ev.Allow = false;
             }
         }
@@ -85,12 +81,12 @@ namespace MoreWeapons.Handlers
 
         public bool IsInDimension { get; set; } = false;
 
-        public bool Use1499()
+        public void Use1499()
         {
             if(player.Zone == Synapse.Api.Enum.ZoneType.Pocket)
             {
                 player.GiveTextHint("You can't use it right now");
-                return false;
+                return;
             }
 
             if (IsInDimension)
@@ -100,8 +96,11 @@ namespace MoreWeapons.Handlers
                     player.GiveEffect(Synapse.Api.Enum.Effect.Decontaminating);
                 IsInDimension = false;
 
+
+                player.VanillaInventory._cawi.usableCooldowns[3] = PluginClass.Scp1499Config.Cooldown;
+                player.VanillaInventory._cawi.RpcSetCooldown(3, PluginClass.Scp1499Config.Cooldown);
+
                 Timing.KillCoroutines(kickcoroutine.ToArray());
-                return true;
             }
             else
             {
@@ -111,7 +110,6 @@ namespace MoreWeapons.Handlers
 
                 KickOut(PluginClass.Scp1499Config.Scp1499ResidenceTime);
                 IsInDimension = true;
-                return false;
             }
         }
 
@@ -128,11 +126,7 @@ namespace MoreWeapons.Handlers
             yield return Timing.WaitForSeconds(delay);
 
             if (IsInDimension)
-            {
                 Use1499();
-                player.VanillaInventory._cawi.usableCooldowns[3] = PluginClass.Scp1499Config.Cooldown;
-                player.VanillaInventory._cawi.RpcSetCooldown(3, PluginClass.Scp1499Config.Cooldown);
-            }
         }
     }
 }

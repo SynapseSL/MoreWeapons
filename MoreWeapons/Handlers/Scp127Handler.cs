@@ -25,7 +25,7 @@ namespace MoreWeapons.Handlers
 
         private void OnPickup(Synapse.Api.Events.SynapseEventArguments.PlayerPickUpItemEventArgs ev)
         {
-            if (ev.Item.ID == (int)CustomItemType.Scp127)
+            if (ev.Item?.ID == (int)CustomItemType.Scp127)
                 ev.Player.GiveTextHint("You have picked up Scp-127");
         }
 
@@ -54,7 +54,7 @@ namespace MoreWeapons.Handlers
 
         private void OnReload(Synapse.Api.Events.SynapseEventArguments.PlayerReloadEventArgs ev)
         {
-            if(ev.Item.ID == (int)CustomItemType.Scp127)
+            if(ev.Item?.ID == (int)CustomItemType.Scp127)
                 ev.Allow = false;
         }
     }

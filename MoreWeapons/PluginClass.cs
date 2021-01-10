@@ -7,10 +7,10 @@ namespace MoreWeapons
         Author = "Dimenzio",
         Description = "A Plugin that adds new Weapons & Items to the Game",
         LoadPriority = 100,
-        SynapseMajor = SynapseController.SynapseMajor,
-        SynapseMinor = SynapseController.SynapseMinor,
-        SynapsePatch = SynapseController.SynapsePatch,
-        Version = "1.1.1"
+        SynapseMajor = 2,
+        SynapseMinor = 4,
+        SynapsePatch = 2,
+        Version = "1.1.3"
         )]
     public class PluginClass : AbstractPlugin
     {

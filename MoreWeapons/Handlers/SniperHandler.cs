@@ -22,7 +22,7 @@ namespace MoreWeapons.Handlers
         {
             if (ev.Killer == null) return;
 
-            if (ev.Killer.ItemInHand == null) return;
+            if (ev.Killer.ItemInHand == null || ev.Victim == null) return;
 
             if (ev.Killer.ItemInHand.ID == (int)CustomItemType.Sniper && ev.HitInfo.GetDamageType() == DamageTypes.E11StandardRifle)
                 ev.DamageAmount = ev.Victim.RoleType == RoleType.Scp106 ? PluginClass.SnConfig.Damage / 10f : PluginClass.SnConfig.Damage;
@@ -30,7 +30,7 @@ namespace MoreWeapons.Handlers
 
         private void Reload(Synapse.Api.Events.SynapseEventArguments.PlayerReloadEventArgs ev)
         {
-            if (ev.Item.ID == (int)CustomItemType.Sniper)
+            if (ev.Item?.ID == (int)CustomItemType.Sniper)
             {
                 ev.Allow = false;
 
@@ -48,7 +48,7 @@ namespace MoreWeapons.Handlers
 
         private void OnPickup(Synapse.Api.Events.SynapseEventArguments.PlayerPickUpItemEventArgs ev)
         {
-            if (ev.Item.ID == (int)CustomItemType.Sniper)
+            if (ev.Item?.ID == (int)CustomItemType.Sniper)
                 ev.Player.GiveTextHint("You have picked up a Sniper");
         }
     }

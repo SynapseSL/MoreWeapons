@@ -19,13 +19,13 @@ namespace MoreWeapons.Handlers
 
         private void OnItemUse(Synapse.Api.Events.SynapseEventArguments.PlayerItemInteractEventArgs ev)
         {
-            if(ev.CurrentItem.ID == (int)CustomItemType.XlMedkit && ev.State == Synapse.Api.Events.SynapseEventArguments.ItemInteractState.Finalizing)
+            if(ev.CurrentItem?.ID == (int)CustomItemType.XlMedkit && ev.State == Synapse.Api.Events.SynapseEventArguments.ItemInteractState.Finalizing)
                 ev.Player.Inventory.AddItem(ItemType.Medkit, 0, 0, 0, 0);
         }
 
         private void OnPickup(Synapse.Api.Events.SynapseEventArguments.PlayerPickUpItemEventArgs ev)
         {
-            if(ev.Item.ID == (int)CustomItemType.XlMedkit)
+            if(ev.Item?.ID == (int)CustomItemType.XlMedkit)
                 ev.Player.GiveTextHint("You have picked up a XlMedkit");
         }
     }

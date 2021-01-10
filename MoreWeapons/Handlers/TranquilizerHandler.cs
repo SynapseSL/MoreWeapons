@@ -35,7 +35,7 @@ namespace MoreWeapons.Handlers
 
         private void OnReload(Synapse.Api.Events.SynapseEventArguments.PlayerReloadEventArgs ev)
         {
-            if (ev.Item.ID == (int)CustomItemType.Tranquilizer)
+            if (ev.Item?.ID == (int)CustomItemType.Tranquilizer)
             {
                 ev.Allow = false;
 
@@ -53,7 +53,7 @@ namespace MoreWeapons.Handlers
 
         private void OnShoot(Synapse.Api.Events.SynapseEventArguments.PlayerShootEventArgs ev)
         {
-            if(ev.Weapon.ID == (int)CustomItemType.Tranquilizer)
+            if(ev.Weapon?.ID == (int)CustomItemType.Tranquilizer)
             {
                 if (ev.Target != null)
                 {
@@ -73,7 +73,7 @@ namespace MoreWeapons.Handlers
 
         private void Pickup(Synapse.Api.Events.SynapseEventArguments.PlayerPickUpItemEventArgs ev)
         {
-            if (ev.Item.ID == (int)CustomItemType.Tranquilizer)
+            if (ev.Item?.ID == (int)CustomItemType.Tranquilizer)
                 ev.Player.GiveTextHint("You have picked up a Tranquilizer");
         }
 

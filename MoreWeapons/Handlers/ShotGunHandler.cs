@@ -23,7 +23,7 @@ namespace MoreWeapons.Handlers
 
         private void OnReload(Synapse.Api.Events.SynapseEventArguments.PlayerReloadEventArgs ev)
         {
-            if(ev.Item.ID == (int)CustomItemType.ShotGun)
+            if(ev.Item?.ID == (int)CustomItemType.ShotGun)
             {
                 ev.Allow = false;
 
@@ -41,13 +41,13 @@ namespace MoreWeapons.Handlers
 
         private void OnPickup(Synapse.Api.Events.SynapseEventArguments.PlayerPickUpItemEventArgs ev)
         {
-            if(ev.Item.ID == (int)CustomItemType.ShotGun)
+            if(ev.Item?.ID == (int)CustomItemType.ShotGun)
                 ev.Player.GiveTextHint("You have picked up a ShotGun");
         }
 
         private void OnShoot(Synapse.Api.Events.SynapseEventArguments.PlayerShootEventArgs ev)
         {
-            if(ev.Weapon.ID == (int)CustomItemType.ShotGun)
+            if(ev.Weapon?.ID == (int)CustomItemType.ShotGun)
             {
                 ev.Allow = false;
 

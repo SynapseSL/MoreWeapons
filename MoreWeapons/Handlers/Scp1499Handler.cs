@@ -2,11 +2,14 @@
 using Synapse;
 using MEC;
 using UnityEngine;
+using Synapse.Config;
 
 namespace MoreWeapons.Handlers
 {
     public class Scp1499Handler
     {
+        private readonly SerializedMapPoint doorSpawn = new SerializedMapPoint("HCZ_049", -6.683522f, 264.0f, 24.09575f);
+
         public Scp1499Handler()
         {
             Server.Get.ItemManager.RegisterCustomItem(new Synapse.Api.Items.CustomItemInformation
@@ -16,10 +19,30 @@ namespace MoreWeapons.Handlers
                 Name = "Scp1499"
             });
 
+            Server.Get.Events.Player.PlayerDropItemEvent += Drop;
             Server.Get.Events.Player.PlayerPickUpItemEvent += OnPickup;
             Server.Get.Events.Player.PlayerItemUseEvent += OnUse;
             Server.Get.Events.Player.LoadComponentsEvent += OnLoad;
             Server.Get.Events.Player.PlayerSetClassEvent += OnSetClass;
+            Server.Get.Events.Round.WaitingForPlayersEvent += Waiting;
+        }
+
+        private void Drop(Synapse.Api.Events.SynapseEventArguments.PlayerDropItemEventArgs ev)
+        {
+            if (ev.Player.GetComponent<Scp1499PlayerScript>().IsInDimension && ev.Item?.ID == (int)CustomItemType.Scp1499)
+            {
+                ev.Allow = false;
+                ev.Player.GiveTextHint("You can't currently drop Scp1499");
+            }
+        }
+
+        private void Waiting()
+        {
+            if (PluginClass.Scp1499Config.SpawnDoor)
+            {
+                var door = Synapse.Api.Map.Get.SpawnDoorVariant(doorSpawn.Parse().Position, Synapse.Api.Map.Get.GetRoom(RoomInformation.RoomType.HCZ_049).GameObject.transform.rotation);
+                door.GameObject.GetComponent<Interactables.Interobjects.DoorUtils.DoorVariant>().ServerChangeLock(Interactables.Interobjects.DoorUtils.DoorLockReason.SpecialDoorFeature, true);
+            }
         }
 
         private void OnSetClass(Synapse.Api.Events.SynapseEventArguments.PlayerSetClassEventArgs ev) 
@@ -33,9 +56,13 @@ namespace MoreWeapons.Handlers
 
         private void OnUse(Synapse.Api.Events.SynapseEventArguments.PlayerItemInteractEventArgs ev)
         {
-            if(ev.CurrentItem != null && ev.CurrentItem.ID == (int)CustomItemType.Scp1499 && ev.State == Synapse.Api.Events.SynapseEventArguments.ItemInteractState.Finalizing)
+            if(ev.CurrentItem?.ID == (int)CustomItemType.Scp1499 && ev.State == Synapse.Api.Events.SynapseEventArguments.ItemInteractState.Finalizing)
             {
-                ev.Player.GetComponent<Scp1499PlayerScript>().Use1499();
+                if (ev.Player.GetComponent<Scp1499PlayerScript>().Use1499())
+                {
+                    ev.Player.VanillaInventory._cawi.usableCooldowns[3] = PluginClass.Scp1499Config.Cooldown;
+                    ev.Player.VanillaInventory._cawi.RpcSetCooldown(3, PluginClass.Scp1499Config.Cooldown);
+                }
                 ev.Allow = false;
             }
         }
@@ -58,12 +85,12 @@ namespace MoreWeapons.Handlers
 
         public bool IsInDimension { get; set; } = false;
 
-        public void Use1499()
+        public bool Use1499()
         {
             if(player.Zone == Synapse.Api.Enum.ZoneType.Pocket)
             {
                 player.GiveTextHint("You can't use it right now");
-                return;
+                return false;
             }
 
             if (IsInDimension)
@@ -74,6 +101,7 @@ namespace MoreWeapons.Handlers
                 IsInDimension = false;
 
                 Timing.KillCoroutines(kickcoroutine.ToArray());
+                return true;
             }
             else
             {
@@ -83,6 +111,7 @@ namespace MoreWeapons.Handlers
 
                 KickOut(PluginClass.Scp1499Config.Scp1499ResidenceTime);
                 IsInDimension = true;
+                return false;
             }
         }
 
@@ -98,7 +127,12 @@ namespace MoreWeapons.Handlers
         {
             yield return Timing.WaitForSeconds(delay);
 
-            if (IsInDimension) Use1499();
+            if (IsInDimension)
+            {
+                Use1499();
+                player.VanillaInventory._cawi.usableCooldowns[3] = PluginClass.Scp1499Config.Cooldown;
+                player.VanillaInventory._cawi.RpcSetCooldown(3, PluginClass.Scp1499Config.Cooldown);
+            }
         }
     }
 }

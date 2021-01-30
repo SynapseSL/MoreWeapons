@@ -33,8 +33,6 @@ namespace MoreWeapons.Handlers
             ev.Allow = !ev.Player.GetComponent<C4PlayerComponent>().ExplodeAll();
         }
 
-        private Dictionary<int, Grenades.Grenade> c4 = new Dictionary<int, Grenades.Grenade>();
-
         private void UseItem(Synapse.Api.Events.SynapseEventArguments.PlayerItemInteractEventArgs ev)
         {
             if(ev.CurrentItem.ID == (int)CustomItemType.C4 && ev.State == Synapse.Api.Events.SynapseEventArguments.ItemInteractState.Finalizing)

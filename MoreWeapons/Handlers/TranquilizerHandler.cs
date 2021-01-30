@@ -19,7 +19,6 @@ namespace MoreWeapons.Handlers
             });
 
             Server.Get.Events.Player.LoadComponentsEvent += LoadComponents;
-            Server.Get.Events.Player.PlayerPickUpItemEvent += Pickup;
             Server.Get.Events.Player.PlayerDropItemEvent += OnDrop;
             Server.Get.Events.Player.PlayerShootEvent += OnShoot;
             Server.Get.Events.Player.PlayerReloadEvent += OnReload;
@@ -69,12 +68,6 @@ namespace MoreWeapons.Handlers
             if (!ev.Player.GetComponent<TranquilizerPlayerScript>().Stuned) return;
 
             ev.Allow = false;
-        }
-
-        private void Pickup(Synapse.Api.Events.SynapseEventArguments.PlayerPickUpItemEventArgs ev)
-        {
-            if (ev.Item?.ID == (int)CustomItemType.Tranquilizer)
-                ev.Player.GiveTextHint("You have picked up a Tranquilizer");
         }
 
         private void LoadComponents(Synapse.Api.Events.SynapseEventArguments.LoadComponentEventArgs ev)

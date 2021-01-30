@@ -13,7 +13,6 @@ namespace MoreWeapons.Handlers
                 Name = "Sniper"
             });
 
-            Server.Get.Events.Player.PlayerPickUpItemEvent += OnPickup;
             Server.Get.Events.Player.PlayerDamageEvent += OnDamage;
             Server.Get.Events.Player.PlayerReloadEvent += Reload;
         }
@@ -44,12 +43,6 @@ namespace MoreWeapons.Handlers
                 ev.Item.Durabillity += reloadAmount;
                 ev.Player.Ammo5 -= (uint)reloadAmount * (uint)PluginClass.SnConfig.AmooNeededForOneShoot;
             }
-        }
-
-        private void OnPickup(Synapse.Api.Events.SynapseEventArguments.PlayerPickUpItemEventArgs ev)
-        {
-            if (ev.Item?.ID == (int)CustomItemType.Sniper)
-                ev.Player.GiveTextHint("You have picked up a Sniper");
         }
     }
 }

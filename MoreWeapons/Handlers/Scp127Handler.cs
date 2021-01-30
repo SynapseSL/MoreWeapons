@@ -20,13 +20,6 @@ namespace MoreWeapons.Handlers
             Server.Get.Events.Player.PlayerReloadEvent += OnReload;
             Server.Get.Events.Round.RoundStartEvent += OnStart;
             Server.Get.Events.Round.RoundRestartEvent += OnRestart;
-            Server.Get.Events.Player.PlayerPickUpItemEvent += OnPickup;
-        }
-
-        private void OnPickup(Synapse.Api.Events.SynapseEventArguments.PlayerPickUpItemEventArgs ev)
-        {
-            if (ev.Item?.ID == (int)CustomItemType.Scp127)
-                ev.Player.GiveTextHint("You have picked up Scp-127");
         }
 
         private void OnStart() => coroutine = MEC.Timing.RunCoroutine(Refill());

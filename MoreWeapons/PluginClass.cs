@@ -1,4 +1,5 @@
 ﻿using Synapse.Api.Plugin;
+using Synapse;
 
 namespace MoreWeapons
 {
@@ -32,8 +33,12 @@ namespace MoreWeapons
         [Config(section = "Scp1499")]
         public static Configs.Scp1499Config Scp1499Config;
 
+        [Config(section = "C4")]
+        public static Configs.C4Config C4Config;
+
         public override void Load()
         {
+            new EventHandlers();
             new Handlers.GrenadeLauncherHandler();
             new Handlers.ShotGunHandler();
             new Handlers.SniperHandler();
@@ -41,6 +46,8 @@ namespace MoreWeapons
             new Handlers.XlMedkitHandler();
             new Handlers.TranquilizerHandler();
             new Handlers.Scp1499Handler();
+            new Handlers.MedkitGunHandler();
+            new Handlers.C4Handler();
         }
     }
 }

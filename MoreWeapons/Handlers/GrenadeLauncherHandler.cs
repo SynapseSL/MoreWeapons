@@ -19,13 +19,6 @@ namespace MoreWeapons.Handlers
 
             Server.Get.Events.Player.PlayerShootEvent += Shoot;
             Server.Get.Events.Player.PlayerReloadEvent += OnReload;
-            Server.Get.Events.Player.PlayerPickUpItemEvent += OnPickup;
-        }
-
-        private void OnPickup(Synapse.Api.Events.SynapseEventArguments.PlayerPickUpItemEventArgs ev)
-        {
-            if (ev.Item?.ID == (int)CustomItemType.GrenadeLauncher)
-                ev.Player.GiveTextHint("You have picked up a GrenadeLauncher");
         }
 
         private void OnReload(Synapse.Api.Events.SynapseEventArguments.PlayerReloadEventArgs ev)

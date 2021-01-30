@@ -77,6 +77,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configs\C4Config.cs" />
+    <Compile Include="EventHandlers.cs" />
     <Compile Include="Configs\Scp1499Config.cs" />
     <Compile Include="Configs\TranquilizerConfig.cs" />
     <Compile Include="Configs\SniperConfig.cs" />
@@ -84,6 +86,8 @@
     <Compile Include="Configs\Scp127Config.cs" />
     <Compile Include="Configs\ShotGunConfig.cs" />
     <Compile Include="Configs\GrenadeLauncherConfig.cs" />
+    <Compile Include="Handlers\C4Handler.cs" />
+    <Compile Include="Handlers\MedkitGunHandler.cs" />
     <Compile Include="Handlers\Scp1499Handler.cs" />
     <Compile Include="Handlers\TranquilizerHandler.cs" />
     <Compile Include="Handlers\XlMedkitHandler.cs" />

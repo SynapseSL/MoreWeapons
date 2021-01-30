@@ -20,7 +20,6 @@ namespace MoreWeapons.Handlers
             });
 
             Server.Get.Events.Player.PlayerDropItemEvent += Drop;
-            Server.Get.Events.Player.PlayerPickUpItemEvent += OnPickup;
             Server.Get.Events.Player.PlayerItemUseEvent += OnUse;
             Server.Get.Events.Player.LoadComponentsEvent += OnLoad;
             Server.Get.Events.Player.PlayerSetClassEvent += OnSetClass;
@@ -61,12 +60,6 @@ namespace MoreWeapons.Handlers
                 ev.Player.GetComponent<Scp1499PlayerScript>().Use1499();
                 ev.Allow = false;
             }
-        }
-
-        private void OnPickup(Synapse.Api.Events.SynapseEventArguments.PlayerPickUpItemEventArgs ev)
-        {
-            if (ev.Item.ID == (int)CustomItemType.Scp1499)
-                ev.Player.GiveTextHint("You have picked up Scp1499");
         }
     }
 

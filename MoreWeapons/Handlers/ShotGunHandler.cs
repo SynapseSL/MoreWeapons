@@ -17,7 +17,6 @@ namespace MoreWeapons.Handlers
             });
 
             Server.Get.Events.Player.PlayerShootEvent += OnShoot;
-            Server.Get.Events.Player.PlayerPickUpItemEvent += OnPickup;
             Server.Get.Events.Player.PlayerReloadEvent += OnReload;
         }
 
@@ -37,12 +36,6 @@ namespace MoreWeapons.Handlers
                 ev.Item.Durabillity += reloadAmount;
                 ev.Player.Ammo9 -= (uint)reloadAmount;
             }
-        }
-
-        private void OnPickup(Synapse.Api.Events.SynapseEventArguments.PlayerPickUpItemEventArgs ev)
-        {
-            if(ev.Item?.ID == (int)CustomItemType.ShotGun)
-                ev.Player.GiveTextHint("You have picked up a ShotGun");
         }
 
         private void OnShoot(Synapse.Api.Events.SynapseEventArguments.PlayerShootEventArgs ev)

@@ -78,6 +78,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configs\C4Config.cs" />
+    <Compile Include="Configs\MedkitGunConfig.cs" />
     <Compile Include="EventHandlers.cs" />
     <Compile Include="Configs\Scp1499Config.cs" />
     <Compile Include="Configs\TranquilizerConfig.cs" />

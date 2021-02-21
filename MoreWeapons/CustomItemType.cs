@@ -9,8 +9,8 @@
         Scp127,
         XlMedkit,
         Scp1499,
-        MedkitGun,
         C4,
+        MedkitGun,
 
         //Coming maybe in the Future :D
         //MolotovCocktail,

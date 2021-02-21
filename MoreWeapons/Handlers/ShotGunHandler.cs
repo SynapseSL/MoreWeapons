@@ -42,6 +42,7 @@ namespace MoreWeapons.Handlers
         {
             if(ev.Weapon?.ID == (int)CustomItemType.ShotGun)
             {
+                ev.Player.PlayerInteract.OnInteract();
                 ev.Allow = false;
 
                 var bullets = PluginClass.SGConfig.BulletsPerShoot;

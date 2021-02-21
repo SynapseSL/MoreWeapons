@@ -54,6 +54,7 @@ namespace MoreWeapons.Handlers
         {
             if(ev.Weapon?.ID == (int)CustomItemType.Tranquilizer)
             {
+                ev.Player.PlayerInteract.OnInteract();
                 if (ev.Target != null)
                 {
                     ev.Target.GetComponent<TranquilizerPlayerScript>().Stun();

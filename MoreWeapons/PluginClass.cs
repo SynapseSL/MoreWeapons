@@ -11,30 +11,33 @@ namespace MoreWeapons
         SynapseMajor = 2,
         SynapseMinor = 4,
         SynapsePatch = 2,
-        Version = "1.1.3"
+        Version = "1.2.0"
         )]
     public class PluginClass : AbstractPlugin
     {
         [Config(section = "GrenadeLauncher")]
-        public static Configs.GrenadeLauncherConfig GLConfig;
+        public static Configs.GrenadeLauncherConfig GLConfig { get; set; }
 
         [Config(section = "ShotGun")]
-        public static Configs.ShotGunConfig SGConfig;
+        public static Configs.ShotGunConfig SGConfig { get; set; }
 
         [Config(section = "Scp-127")]
-        public static Configs.Scp127Config Scp127Config;
+        public static Configs.Scp127Config Scp127Config { get; set; }
 
         [Config(section = "Sniper")]
-        public static Configs.SniperConfig SnConfig;
+        public static Configs.SniperConfig SnConfig { get; set; }
 
         [Config(section = "Tranquilizer")]
-        public static Configs.TranquilizerConfig TzConfig;
+        public static Configs.TranquilizerConfig TzConfig { get; set; }
 
         [Config(section = "Scp1499")]
-        public static Configs.Scp1499Config Scp1499Config;
+        public static Configs.Scp1499Config Scp1499Config { get; set; }
 
         [Config(section = "C4")]
-        public static Configs.C4Config C4Config;
+        public static Configs.C4Config C4Config { get; set; }
+
+        [Config(section = "MedkitGun")]
+        public static Configs.MedkitGunConfig MedkitGunConfig { get; set; }
 
         public override void Load()
         {
@@ -46,8 +49,8 @@ namespace MoreWeapons
             new Handlers.XlMedkitHandler();
             new Handlers.TranquilizerHandler();
             new Handlers.Scp1499Handler();
-            new Handlers.MedkitGunHandler();
             new Handlers.C4Handler();
+            new Handlers.MedkitGunHandler();
         }
     }
 }

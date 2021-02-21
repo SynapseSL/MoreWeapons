@@ -30,7 +30,6 @@ namespace MoreWeapons.Handlers
                 if (!PluginClass.GLConfig.CanBeReloaded)
                     return;
 
-                ev.Allow = false;
                 foreach (var grenade in ev.Player.Inventory.Items.Where(x => x.ID == (int)ItemType.GrenadeFrag))
                 {
                     if (ev.Item.Durabillity >= PluginClass.GLConfig.MagazineSize)
@@ -46,6 +45,7 @@ namespace MoreWeapons.Handlers
         {
             if(ev.Weapon?.ID == (int)CustomItemType.GrenadeLauncher)
             {
+                ev.Player.PlayerInteract.OnInteract();
                 ev.Allow = false;
                 ev.Weapon.Durabillity--;
 

@@ -30,7 +30,8 @@ namespace MoreWeapons.Handlers
 
         private void DropAmmo(Synapse.Api.Events.SynapseEventArguments.PlayerDropAmmoEventArgs ev)
         {
-            ev.Allow = !ev.Player.GetComponent<C4PlayerComponent>().ExplodeAll();
+            if (ev.Player.GetComponent<C4PlayerComponent>().ExplodeAll())
+                ev.Allow = false;
         }
 
         private void UseItem(Synapse.Api.Events.SynapseEventArguments.PlayerItemInteractEventArgs ev)

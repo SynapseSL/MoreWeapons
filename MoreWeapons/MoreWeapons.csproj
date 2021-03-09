@@ -79,6 +79,7 @@
   <ItemGroup>
     <Compile Include="Configs\C4Config.cs" />
     <Compile Include="Configs\MedkitGunConfig.cs" />
+    <Compile Include="Configs\VaccinePistoleConfig.cs" />
     <Compile Include="EventHandlers.cs" />
     <Compile Include="Configs\Scp1499Config.cs" />
     <Compile Include="Configs\TranquilizerConfig.cs" />
@@ -91,6 +92,7 @@
     <Compile Include="Handlers\MedkitGunHandler.cs" />
     <Compile Include="Handlers\Scp1499Handler.cs" />
     <Compile Include="Handlers\TranquilizerHandler.cs" />
+    <Compile Include="Handlers\VaccinePistoleHandler.cs" />
     <Compile Include="Handlers\XlMedkitHandler.cs" />
     <Compile Include="Handlers\SniperHandler.cs" />
     <Compile Include="Handlers\Scp127Handler.cs" />

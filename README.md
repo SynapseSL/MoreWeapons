@@ -60,14 +60,14 @@ Description: A mask which brings you to a other dimension
 
 **C4**
 ```
-ID: 56
+ID: 57
 Name: C4
 Description: A Grenade that sticks on Walls and can be activated with a tablet
 ```
 
 **MedkitGun**
 ```
-ID: 57
+ID: 58
 Name: MedkitGun
 Description: A Gun that heals players instead of hurting them
 ```

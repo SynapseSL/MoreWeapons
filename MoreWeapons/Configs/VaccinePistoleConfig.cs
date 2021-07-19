@@ -15,5 +15,8 @@ namespace MoreWeapons.Configs
 
         [Description("The amount of Damage when the Target is not SCP-049-2")]
         public int Damage = 10;
+
+        [Description("The Amount of Adrenaline that can be loaded into the VaccinePistole")]
+        public int MagazineSize { get; set; }
     }
 }

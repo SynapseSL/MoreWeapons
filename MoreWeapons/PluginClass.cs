@@ -40,6 +40,9 @@ namespace MoreWeapons
         [Config(section = "MedkitGun")]
         public static Configs.MedkitGunConfig MedkitGunConfig { get; set; }
 
+        [Config(section = "VaccinePistole")]
+        public static Configs.VaccinePistoleConfig VPConfig { get; set; }
+
         public override void Load()
         {
             RegisterItems();

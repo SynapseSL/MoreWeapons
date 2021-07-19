@@ -111,6 +111,7 @@ namespace MoreWeapons
         //Tranquilizer
         //GrenadLauncher
         //MedkitGun
+        //VaccinePistole
         private void OnShoot(PlayerShootEventArgs ev)
         {
             if (ev.Player.GetComponent<TranquilizerPlayerScript>().Stuned)
@@ -241,10 +242,10 @@ namespace MoreWeapons
                         if (ev.Target.RoleID == (int)RoleType.Scp0492)
                         {
                             pos = ev.Target.Position;
-                            ev.Target.RoleType = RoleType.ClassD;
+                            ev.Target.RoleID = PluginClass.VPConfig.ReplaceRoles.ElementAt(UnityEngine.Random.Range(0, PluginClass.VPConfig.ReplaceRoles.Count));
                             ev.Target.Position = pos;
                         }
-                        else ev.Target.Hurt(10);
+                        else ev.Target.Hurt(PluginClass.VPConfig.Damage);
                     }
                     else ev.Player.WeaponManager.RpcConfirmShot(false, ev.Player.WeaponManager.curWeapon);
                     break;
@@ -338,6 +339,19 @@ namespace MoreWeapons
 
                     ev.Item.Durabillity += reloadAmount;
                     ev.Player.Ammo9 -= (uint)reloadAmount;
+                    break;
+
+                case (int)CustomItemType.VaccinePistole:
+                    ev.Allow = false;
+
+                    foreach (var scp500 in ev.Player.Inventory.Items.Where(x => x.ID == (int)ItemType.SCP500))
+                    {
+                        if (ev.Item.Durabillity >= PluginClass.VPConfig.MagazineSize)
+                            return;
+
+                        scp500.Destroy();
+                        ev.Item.Durabillity++;
+                    }
                     break;
             }
         }

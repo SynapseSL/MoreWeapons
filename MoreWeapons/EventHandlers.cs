@@ -14,6 +14,7 @@ namespace MoreWeapons
     {
         public EventHandlers()
         {
+            Server.Get.Events.Player.PlayerChangeItemEvent += Equip;
             Server.Get.Events.Player.LoadComponentsEvent += LoadComponents;
             Server.Get.Events.Player.PlayerDamageEvent += OnDamage;
             Server.Get.Events.Player.PlayerDropAmmoEvent += OnDropAmmo;
@@ -424,6 +425,12 @@ namespace MoreWeapons
                 UnityEngine.Random.Range(-PluginClass.SGConfig.AimCone, PluginClass.SGConfig.AimCone),
                 UnityEngine.Random.Range(-PluginClass.SGConfig.AimCone, PluginClass.SGConfig.AimCone)
                 );
+        }
+        
+         private void Equip(Synapse.Api.Events.SynapseEventArguments.PlayerChangeItemEventArgs ev)
+        {
+            if (System.Enum.GetValues(typeof(CustomItemType)).ToArray<CustomItemType>().Any(x => (int)x == ev.NewItem.ID))
+                ev.Player.GiveTextHint($"You have equipped {(CustomItemType)ev.NewItem.ID}");
         }
     }
 }

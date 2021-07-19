@@ -58,6 +58,19 @@ BasedItemType: Scp268
 Description: A mask which brings you to a other dimension
 ```
 
+**C4**
+```
+ID: 57
+Name: C4
+Description: A Grenade that sticks on Walls and can be activated with a tablet
+```
+
+**MedkitGun**
+```
+ID: 58
+Name: MedkitGun
+Description: A Gun that heals players instead of hurting them
+```
 
 ## Installation
 1. [Install Synapse](https://github.com/SynapseSL/Synapse/wiki#hosting-guides)

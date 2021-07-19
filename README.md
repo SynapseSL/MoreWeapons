@@ -72,6 +72,13 @@ Name: MedkitGun
 Description: A Gun that heals players instead of hurting them
 ```
 
+**VaccinePistole**
+```
+ID: 59
+Name: VaccinePistole
+Description: A pistole that can heal SCP-049-2 with the use of SCP500
+```
+
 ## Installation
 1. [Install Synapse](https://github.com/SynapseSL/Synapse/wiki#hosting-guides)
 2. Place the MoreWeapons.dll file that you can download [here](https://github.com/SynapseSL/MoreWeapons/releases) in your plugin directory

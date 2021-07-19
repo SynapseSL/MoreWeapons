@@ -1,5 +1,6 @@
 ﻿using Synapse.Api.Plugin;
 using Synapse;
+using Synapse.Api.Items;
 
 namespace MoreWeapons
 {
@@ -9,9 +10,9 @@ namespace MoreWeapons
         Description = "A Plugin that adds new Weapons & Items to the Game",
         LoadPriority = 100,
         SynapseMajor = 2,
-        SynapseMinor = 4,
-        SynapsePatch = 2,
-        Version = "1.2.0"
+        SynapseMinor = 6,
+        SynapsePatch = 1,
+        Version = "1.3.0"
         )]
     public class PluginClass : AbstractPlugin
     {
@@ -41,16 +42,82 @@ namespace MoreWeapons
 
         public override void Load()
         {
+            RegisterItems();
+
             new EventHandlers();
-            new Handlers.GrenadeLauncherHandler();
-            new Handlers.ShotGunHandler();
-            new Handlers.SniperHandler();
-            new Handlers.Scp127Handler();
-            new Handlers.XlMedkitHandler();
-            new Handlers.TranquilizerHandler();
-            new Handlers.Scp1499Handler();
-            new Handlers.C4Handler();
-            new Handlers.MedkitGunHandler();
+        }
+
+        private void RegisterItems()
+        {
+            Server.Get.ItemManager.RegisterCustomItem(new CustomItemInformation
+            {
+                ID = (int)CustomItemType.Tranquilizer,
+                Name = "Tranquilizer",
+                BasedItemType = ItemType.GunUSP
+            });
+
+            Server.Get.ItemManager.RegisterCustomItem(new CustomItemInformation
+            {
+                BasedItemType = ItemType.GunLogicer,
+                ID = (int)CustomItemType.GrenadeLauncher,
+                Name = "GrenadeLauncher"
+            });
+
+            Server.Get.ItemManager.RegisterCustomItem(new CustomItemInformation
+            {
+                ID = (int)CustomItemType.ShotGun,
+                Name = "ShotGun",
+                BasedItemType = ItemType.GunUSP,
+            });
+
+            Server.Get.ItemManager.RegisterCustomItem(new CustomItemInformation
+            {
+                ID = (int)CustomItemType.Sniper,
+                BasedItemType = ItemType.GunE11SR,
+                Name = "Sniper"
+            });
+
+            Server.Get.ItemManager.RegisterCustomItem(new CustomItemInformation
+            {
+                ID = (int)CustomItemType.Scp127,
+                BasedItemType = ItemType.GunProject90,
+                Name = "Scp-127"
+            });
+
+            Server.Get.ItemManager.RegisterCustomItem(new CustomItemInformation
+            {
+                ID = (int)CustomItemType.XlMedkit,
+                Name = "XlMedkit",
+                BasedItemType = ItemType.Medkit
+            });
+
+            Server.Get.ItemManager.RegisterCustomItem(new CustomItemInformation
+            {
+                BasedItemType = ItemType.SCP268,
+                ID = (int)CustomItemType.Scp1499,
+                Name = "Scp1499"
+            });
+
+            Server.Get.ItemManager.RegisterCustomItem(new CustomItemInformation
+            {
+                BasedItemType = ItemType.GrenadeFrag,
+                ID = (int)CustomItemType.C4,
+                Name = "C4"
+            });
+
+            Server.Get.ItemManager.RegisterCustomItem(new CustomItemInformation
+            {
+                BasedItemType = ItemType.GunMP7,
+                ID = (int)CustomItemType.MedkitGun,
+                Name = "MedkitGun"
+            });
+
+            Server.Get.ItemManager.RegisterCustomItem(new CustomItemInformation
+            {
+                BasedItemType = ItemType.GunCOM15,
+                ID = (int)CustomItemType.VaccinePistole,
+                Name = "VaccinePistole"
+            });
         }
     }
 }

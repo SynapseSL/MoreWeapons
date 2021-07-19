@@ -11,7 +11,7 @@
         Scp1499,
         C4,
         MedkitGun,
-        //VaccinePistole,
+        VaccinePistole,
 
         //Coming maybe in the Future :D
         //MolotovCocktail,

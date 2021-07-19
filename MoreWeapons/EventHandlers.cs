@@ -12,27 +12,37 @@ namespace MoreWeapons
 {
     public class EventHandlers
     {
+        public CustomItemType[] AllTypes { get; private set; }
+
         public EventHandlers()
         {
-            Server.Get.Events.Player.PlayerChangeItemEvent += Equip;
-            Server.Get.Events.Player.LoadComponentsEvent += LoadComponents;
+            Server.Get.Events.Player.PlayerChangeItemEvent += OnEquip;
+            Server.Get.Events.Player.LoadComponentsEvent += OnLoadComponents;
             Server.Get.Events.Player.PlayerDamageEvent += OnDamage;
             Server.Get.Events.Player.PlayerDropAmmoEvent += OnDropAmmo;
             Server.Get.Events.Player.PlayerDropItemEvent += OnDrop;
             Server.Get.Events.Player.PlayerItemUseEvent += OnItemUse;
-            Server.Get.Events.Player.PlayerPickUpItemEvent += Pickup;
+            Server.Get.Events.Player.PlayerPickUpItemEvent += OnPickup;
             Server.Get.Events.Player.PlayerReloadEvent += OnReload;
             Server.Get.Events.Player.PlayerSetClassEvent += OnSetClass;
             Server.Get.Events.Player.PlayerShootEvent += OnShoot;
             Server.Get.Events.Round.RoundRestartEvent += OnRestart;
             Server.Get.Events.Round.RoundStartEvent += OnStart;
             Server.Get.Events.Round.WaitingForPlayersEvent += OnWaiting;
+
+            AllTypes = (CustomItemType[])typeof(CustomItemType).GetEnumValues();
         }
 
-        private void Pickup(PlayerPickUpItemEventArgs ev)
+        private void OnPickup(PlayerPickUpItemEventArgs ev)
         {
-            if (System.Enum.GetValues(typeof(CustomItemType)).ToArray<CustomItemType>().Any(x => (int)x == ev.Item.ID))
+            if (AllTypes.Any(x => (int)x == ev.Item.ID))
                 ev.Player.GiveTextHint($"You have picked up a {(CustomItemType)ev.Item.ID}");
+        }
+
+        private void OnEquip(Synapse.Api.Events.SynapseEventArguments.PlayerChangeItemEventArgs ev)
+        {
+            if (AllTypes.Any(x => (int)x == ev.NewItem.ID))
+                ev.Player.GiveTextHint($"You have equipped {(CustomItemType)ev.NewItem.ID}");
         }
 
         //Used by:
@@ -336,7 +346,7 @@ namespace MoreWeapons
         //Tranquilizer
         //SCP-1499
         //C4
-        private void LoadComponents(LoadComponentEventArgs ev)
+        private void OnLoadComponents(LoadComponentEventArgs ev)
         {
             if (ev.Player.GetComponent<TranquilizerPlayerScript>() == null)
                 ev.Player.AddComponent<TranquilizerPlayerScript>();
@@ -425,12 +435,6 @@ namespace MoreWeapons
                 UnityEngine.Random.Range(-PluginClass.SGConfig.AimCone, PluginClass.SGConfig.AimCone),
                 UnityEngine.Random.Range(-PluginClass.SGConfig.AimCone, PluginClass.SGConfig.AimCone)
                 );
-        }
-        
-         private void Equip(Synapse.Api.Events.SynapseEventArguments.PlayerChangeItemEventArgs ev)
-        {
-            if (System.Enum.GetValues(typeof(CustomItemType)).ToArray<CustomItemType>().Any(x => (int)x == ev.NewItem.ID))
-                ev.Player.GiveTextHint($"You have equipped {(CustomItemType)ev.NewItem.ID}");
         }
     }
 }

@@ -3,7 +3,6 @@ MoreWeapons is a plugin that adds many new weapons & items to the Game.
 
 ## Credits
 * Original [TranquilizerGun](https://github.com/NeonWizard/SCP-TranquilizerGun) plugin by [NeonWizard](https://github.com/NeonWizard)
-* Original [ShotGun](https://dev.azure.com/Killers0992/_git/ItemManager?path=%2FShotGun%2FShotgun.cs) plugin by Killer0992
 
 ## CustomItems
 You can get the CustomItems with the command `giveitem playerid itemid` or with other Plugins like [CustomLoadout](https://github.com/AlmightyLks/CustomLoadout) or [ItemSpawner](https://github.com/GrafDimenzio/ItemSpawner)
@@ -21,13 +20,6 @@ ID: 51
 Name: GrenadeLauncher
 BasedItemType: GunLogicer
 Description: A weapon which shoots grenades
-```
-**ShotGun**
-```
-ID: 52
-Name: ShotGun
-BasedItemType: GunUSP
-Description: A weapon which shoots multiple bullets
 ```
 **Sniper**
 ```
@@ -56,13 +48,6 @@ ID: 56
 Name: Scp1499
 BasedItemType: Scp268
 Description: A mask which brings you to a other dimension
-```
-
-**C4**
-```
-ID: 57
-Name: C4
-Description: A Grenade that sticks on Walls and can be activated with a tablet
 ```
 
 **MedkitGun**

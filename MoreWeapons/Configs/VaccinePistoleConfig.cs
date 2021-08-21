@@ -1,6 +1,6 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
 using Synapse.Config;
-using System.Collections.Generic;
 
 namespace MoreWeapons.Configs
 {

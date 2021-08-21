@@ -1,10 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using InventorySystem;
+using InventorySystem.Items.Firearms.BasicMessages;
+using InventorySystem.Items.ThrowableProjectiles;
 using MEC;
+using Mirror;
 using MoreWeapons.Scripts;
 using Synapse;
 using Synapse.Api;
+using Synapse.Api.Enum;
 using Synapse.Api.Events.SynapseEventArguments;
+using Synapse.Api.Items;
 using Synapse.Config;
 using UnityEngine;
 
@@ -19,7 +25,6 @@ namespace MoreWeapons
             Server.Get.Events.Player.PlayerChangeItemEvent += OnEquip;
             Server.Get.Events.Player.LoadComponentsEvent += OnLoadComponents;
             Server.Get.Events.Player.PlayerDamageEvent += OnDamage;
-            Server.Get.Events.Player.PlayerDropAmmoEvent += OnDropAmmo;
             Server.Get.Events.Player.PlayerDropItemEvent += OnDrop;
             Server.Get.Events.Player.PlayerItemUseEvent += OnItemUse;
             Server.Get.Events.Player.PlayerPickUpItemEvent += OnPickup;
@@ -49,7 +54,6 @@ namespace MoreWeapons
         //Tranquilizer
         //XLMedkit
         //SCP-1499
-        //C4
         private void OnItemUse(PlayerItemInteractEventArgs ev)
         {
             if (ev.Player.GetComponent<TranquilizerPlayerScript>().Stuned)
@@ -61,28 +65,12 @@ namespace MoreWeapons
             switch (ev.CurrentItem?.ID)
             {
                 case (int)CustomItemType.XlMedkit when ev.State == Synapse.Api.Events.SynapseEventArguments.ItemInteractState.Finalizing:
-                    ev.Player.Inventory.AddItem(ItemType.Medkit, 0, 0, 0, 0);
+                    ev.Player.Inventory.AddItem(ItemType.Medkit);
                     break;
 
                 case (int)CustomItemType.Scp1499 when ev.State == Synapse.Api.Events.SynapseEventArguments.ItemInteractState.Finalizing:
                     ev.Player.GetComponent<Scp1499PlayerScript>().Use1499();
                     ev.Allow = false;
-                    break;
-
-                case (int)CustomItemType.C4 when ev.State == Synapse.Api.Events.SynapseEventArguments.ItemInteractState.Finalizing:
-                    ev.Allow = false;
-                    ev.CurrentItem.Destroy();
-
-                    var grenade = ev.Player.GrenadeManager.availableGrenades[0].grenadeInstance.GetComponent<Grenades.Grenade>();
-                    var pos = ev.Player.CameraReference.TransformPoint(grenade.throwStartPositionOffset);
-                    var vel = grenade.throwForce * (ev.Player.CameraReference.forward + grenade.throwLinearVelocityOffset).normalized;
-
-                    var grenadeobj = Map.Get.SpawnGrenade(pos, vel, PluginClass.C4Config.FuseTime, Synapse.Api.Enum.GrenadeType.Grenade, ev.Player);
-                    var component = grenadeobj.gameObject.AddComponent<StickyComponent>();
-                    component.owner = ev.Player.gameObject;
-                    component.grenade = grenadeobj;
-
-                    ev.Player.GetComponent<C4PlayerComponent>().C4.Add(grenadeobj);
                     break;
             }
         }
@@ -123,6 +111,7 @@ namespace MoreWeapons
             switch (ev.Weapon?.ID)
             {
                 case (int)CustomItemType.Tranquilizer:
+
                     ev.Player.PlayerInteract.OnInteract();
                     ev.Allow = false;
                     ev.Weapon.Durabillity--;
@@ -130,9 +119,8 @@ namespace MoreWeapons
                     if (ev.Target != null)
                     {
                         ev.Target.GetComponent<TranquilizerPlayerScript>().Stun();
-                        ev.Player.WeaponManager.RpcConfirmShot(true, ev.Player.WeaponManager.curWeapon);
+                        ev.Player.Connection.Send(new RequestMessage(0, RequestType.Hitmarker));
                     }
-                    else ev.Player.WeaponManager.RpcConfirmShot(false, ev.Player.WeaponManager.curWeapon);
                     break;
 
                 case (int)CustomItemType.MedkitGun:
@@ -143,9 +131,8 @@ namespace MoreWeapons
                     if (ev.Target != null)
                     {
                         ev.Target.Heal(PluginClass.MedkitGunConfig.HealAmount);
-                        ev.Player.WeaponManager.RpcConfirmShot(true, ev.Player.WeaponManager.curWeapon);
+                        ev.Player.Connection.Send(new RequestMessage(0, RequestType.Hitmarker));
                     }
-                    else ev.Player.WeaponManager.RpcConfirmShot(false, ev.Player.WeaponManager.curWeapon);
                     break;
 
                 case (int)CustomItemType.GrenadeLauncher:
@@ -153,82 +140,38 @@ namespace MoreWeapons
                     ev.Allow = false;
                     ev.Weapon.Durabillity--;
 
-                    var velocity = (ev.TargetPosition - ev.Player.Position) * PluginClass.GLConfig.ForceMultiplier;
-                    var pos = ev.Player.CameraReference.TransformPoint(
-                        ev.Player.GrenadeManager.availableGrenades[0].grenadeInstance.GetComponent<Grenades.Grenade>().throwStartPositionOffset);
+                    var defaultItem = InventoryItemLoader.AvailableItems[ItemType.GrenadeHE] as ThrowableItem;
+                    var projectile = UnityEngine.Object.Instantiate<ThrownProjectile>(defaultItem.Projectile, defaultItem.Owner.PlayerCameraReference.position,
+                        defaultItem.Owner.PlayerCameraReference.rotation);
+                    var info = new InventorySystem.Items.Pickups.PickupSyncInfo
+                    {
+                        ItemId = defaultItem.ItemTypeId,
+                        Locked = !defaultItem._repickupable,
+                        Serial = 1,
+                        Weight = defaultItem.Weight,
+                        Position = projectile.transform.position,
+                        Rotation = new LowPrecisionQuaternion(projectile.transform.rotation)
+                    };
+                    projectile.NetworkInfo = info;
+                    projectile.PreviousOwner = new Footprinting.Footprint(ev.Player.Hub);
 
-                    var grenade = Map.Get.SpawnGrenade(pos, velocity, PluginClass.GLConfig.GrenadeFuseTime, Synapse.Api.Enum.GrenadeType.Grenade, ev.Player);
+                    NetworkServer.Spawn(projectile.gameObject);
+
+                    projectile.InfoReceived(default, info);
+
+                    if(projectile.TryGetComponent<Rigidbody>(out var rb))
+                    {
+                        var settings = defaultItem.FullThrowSettings;
+                        defaultItem.PropelBody(rb, settings.StartTorque, settings.StartVelocity * PluginClass.GLConfig.ForceMultiplier, settings.UpwardsFactor);
+                    }
+
+                    projectile.ServerActivate();
 
                     if (PluginClass.GLConfig.ExplodeOnCollison)
                     {
-                        var script = grenade.gameObject.AddComponent<ExplodeScript>();
+                        var script = projectile.gameObject.AddComponent<ExplodeScript>();
                         script.owner = ev.Player.gameObject;
                     }
-                    break;
-
-                case (int)CustomItemType.ShotGun:
-                    ev.Player.PlayerInteract.OnInteract();
-                    ev.Allow = false;
-
-                    var bullets = PluginClass.SGConfig.BulletsPerShoot;
-                    if (ev.Weapon.Durabillity <= bullets)
-                        bullets = (int)ev.Weapon.Durabillity;
-                    var rays = new Ray[bullets];
-                    for (int i = 0; i < rays.Length; i++)
-                        rays[i] = new Ray(ev.Player.CameraReference.position + ev.Player.CameraReference.forward, RandomAimcone() * ev.Player.CameraReference.forward);
-
-                    var hits = new RaycastHit[bullets];
-                    var didHit = new bool[hits.Length];
-                    for (int i = 0; i < hits.Length; i++)
-                        didHit[i] = Physics.Raycast(rays[i], out hits[i], 500f, 1208246273);
-
-                    var component = ev.Player.GetComponent<WeaponManager>();
-                    var confirm = false;
-                    for (int i = 0; i < hits.Length; i++)
-                    {
-                        if (!didHit[i]) continue;
-
-                        var hitbox = hits[i].collider.GetComponent<HitboxIdentity>();
-                        if (hitbox != null)
-                        {
-                            var target = hits[i].collider.GetComponentInParent<Synapse.Api.Player>();
-
-                            if (component.GetShootPermission(target.ClassManager))
-                            {
-                                int damage;
-                                switch (hitbox.id)
-                                {
-                                    case HitBoxType.HEAD: damage = PluginClass.SGConfig.DamageHead; break;
-                                    case HitBoxType.ARM: damage = PluginClass.SGConfig.DamageArm; break;
-                                    case HitBoxType.LEG: damage = PluginClass.SGConfig.DamageLeg; break;
-                                    default: damage = PluginClass.SGConfig.DamageBody; break;
-                                }
-                                if (target.RoleType == RoleType.Scp106)
-                                    damage /= 10;
-
-                                target.Hurt(damage, DamageTypes.Mp7, ev.Player);
-                                component.RpcPlaceDecal(true, (sbyte)target.ClassManager.Classes.SafeGet(target.RoleType).bloodType, hits[i].point + hits[i].normal * 0.01f, Quaternion.FromToRotation(Vector3.up, hits[i].normal));
-                                confirm = true;
-                            }
-
-                            continue;
-                        }
-
-                        var window = hits[i].collider.GetComponent<BreakableWindow>();
-                        if (window != null)
-                        {
-                            window.ServerDamageWindow(PluginClass.SGConfig.DamageBody);
-                            confirm = true;
-                            continue;
-                        }
-
-                        component.RpcPlaceDecal(false, component.curWeapon, hits[i].point + hits[i].normal * 0.01f, Quaternion.FromToRotation(Vector3.up, hits[i].normal));
-                    }
-
-                    for (int i = 0; i < bullets; i++)
-                        component.RpcConfirmShot(confirm, component.curWeapon);
-
-                    ev.Weapon.Durabillity -= bullets;
                     break;
 
                 case (int)CustomItemType.VaccinePistole:
@@ -238,16 +181,16 @@ namespace MoreWeapons
 
                     if (ev.Target != null)
                     {
-                        ev.Player.WeaponManager.RpcConfirmShot(true, ev.Player.WeaponManager.curWeapon);
+                        ev.Player.Connection.Send(new RequestMessage(0, RequestType.Hitmarker));
+
                         if (ev.Target.RoleID == (int)RoleType.Scp0492)
                         {
-                            pos = ev.Target.Position;
+                            var pos = ev.Target.Position;
                             ev.Target.RoleID = PluginClass.VPConfig.ReplaceRoles.ElementAt(UnityEngine.Random.Range(0, PluginClass.VPConfig.ReplaceRoles.Count));
                             ev.Target.Position = pos;
                         }
                         else ev.Target.Hurt(PluginClass.VPConfig.Damage);
                     }
-                    else ev.Player.WeaponManager.RpcConfirmShot(false, ev.Player.WeaponManager.curWeapon);
                     break;
             }
         }
@@ -258,7 +201,7 @@ namespace MoreWeapons
         //SCP-127
         //Sniper
         //GrenadeLauncher
-        //ShotGun
+        //VaccinePistole
         private void OnReload(PlayerReloadEventArgs ev)
         {
             switch (ev.Item?.ID)
@@ -270,11 +213,11 @@ namespace MoreWeapons
 
                     var reloadAmount = PluginClass.TzConfig.MagazineSize - ev.Item.Durabillity;
 
-                    if (ev.Player.Ammo9 < reloadAmount * PluginClass.TzConfig.AmooNeededForOneShoot)
-                        reloadAmount = ev.Player.Ammo9 / PluginClass.TzConfig.AmooNeededForOneShoot;
+                    if (ev.Player.AmmoBox[AmmoType.Ammo9x19] < reloadAmount * PluginClass.TzConfig.AmooNeededForOneShoot)
+                        reloadAmount = ev.Player.AmmoBox[AmmoType.Ammo9x19] / PluginClass.TzConfig.AmooNeededForOneShoot;
 
                     ev.Item.Durabillity += reloadAmount;
-                    ev.Player.Ammo9 -= (uint)reloadAmount * (uint)PluginClass.TzConfig.AmooNeededForOneShoot;
+                    ev.Player.AmmoBox[AmmoType.Ammo9x19] -= (ushort)(reloadAmount * PluginClass.TzConfig.AmooNeededForOneShoot);
                     break;
 
                 case (int)CustomItemType.MedkitGun:
@@ -304,11 +247,11 @@ namespace MoreWeapons
 
                     reloadAmount = PluginClass.SnConfig.MagazineSize - ev.Item.Durabillity;
 
-                    if (ev.Player.Ammo5 < reloadAmount * PluginClass.SnConfig.AmooNeededForOneShoot)
-                        reloadAmount = ev.Player.Ammo5 / PluginClass.SnConfig.AmooNeededForOneShoot;
+                    if (ev.Player.AmmoBox[AmmoType.Ammo556x45] < reloadAmount * PluginClass.SnConfig.AmooNeededForOneShoot)
+                        reloadAmount = ev.Player.AmmoBox[AmmoType.Ammo556x45] / PluginClass.SnConfig.AmooNeededForOneShoot;
 
                     ev.Item.Durabillity += reloadAmount;
-                    ev.Player.Ammo5 -= (uint)reloadAmount * (uint)PluginClass.SnConfig.AmooNeededForOneShoot;
+                    ev.Player.AmmoBox[AmmoType.Ammo556x45] -= (ushort)(reloadAmount * PluginClass.SnConfig.AmooNeededForOneShoot);
                     break;
 
                 case (int)CustomItemType.GrenadeLauncher:
@@ -317,7 +260,7 @@ namespace MoreWeapons
                     if (!PluginClass.GLConfig.CanBeReloaded)
                         return;
 
-                    foreach (var grenade in ev.Player.Inventory.Items.Where(x => x.ID == (int)ItemType.GrenadeFrag))
+                    foreach (var grenade in ev.Player.Inventory.Items.Where(x => x.ID == (int)ItemType.GrenadeHE))
                     {
                         if (ev.Item.Durabillity >= PluginClass.GLConfig.MagazineSize)
                             return;
@@ -325,20 +268,6 @@ namespace MoreWeapons
                         grenade.Destroy();
                         ev.Item.Durabillity++;
                     }
-                    break;
-
-                case (int)CustomItemType.ShotGun:
-                    ev.Allow = false;
-
-                    if (ev.Item.Durabillity >= PluginClass.SGConfig.MagazineSize) return;
-
-                    reloadAmount = PluginClass.SGConfig.MagazineSize - ev.Item.Durabillity;
-
-                    if (ev.Player.Ammo9 < reloadAmount)
-                        reloadAmount = ev.Player.Ammo9;
-
-                    ev.Item.Durabillity += reloadAmount;
-                    ev.Player.Ammo9 -= (uint)reloadAmount;
                     break;
 
                 case (int)CustomItemType.VaccinePistole:
@@ -359,7 +288,6 @@ namespace MoreWeapons
         //Used by:
         //Tranquilizer
         //SCP-1499
-        //C4
         private void OnLoadComponents(LoadComponentEventArgs ev)
         {
             if (ev.Player.GetComponent<TranquilizerPlayerScript>() == null)
@@ -367,9 +295,6 @@ namespace MoreWeapons
 
             if (ev.Player.GetComponent<Scp1499PlayerScript>() == null)
                 ev.Player.AddComponent<Scp1499PlayerScript>();
-
-            if (ev.Player.GetComponent<C4PlayerComponent>() == null)
-                ev.Player.AddComponent<C4PlayerComponent>();
         }
 
         //Used by:
@@ -388,7 +313,7 @@ namespace MoreWeapons
 
             switch (ev.Killer.ItemInHand.ID)
             {
-                case (int)CustomItemType.Sniper when ev.HitInfo.GetDamageType() == DamageTypes.E11StandardRifle:
+                case (int)CustomItemType.Sniper when ev.HitInfo.Tool == DamageTypes.E11SR:
                     ev.DamageAmount = ev.Victim.RoleType == RoleType.Scp106 ? PluginClass.SnConfig.Damage / 10f : PluginClass.SnConfig.Damage;
                     break;
             }
@@ -400,7 +325,7 @@ namespace MoreWeapons
         {
             if (PluginClass.Scp1499Config.SpawnDoor)
             {
-                var door = Synapse.Api.Door.SpawnDoorVariant(doorSpawn.Parse().Position, Synapse.Api.Map.Get.GetRoom(RoomInformation.RoomType.HCZ_049).GameObject.transform.rotation);
+                var door = Synapse.Api.Door.SpawnDoorVariant(doorSpawn.Parse().Position, Synapse.Api.Map.Get.GetRoom(MapGeneration.RoomName.Hcz049).GameObject.transform.rotation);
                 door.GameObject.GetComponent<Interactables.Interobjects.DoorUtils.DoorVariant>().ServerChangeLock(Interactables.Interobjects.DoorUtils.DoorLockReason.SpecialDoorFeature, true);
             }
         }
@@ -410,14 +335,6 @@ namespace MoreWeapons
         private void OnSetClass(Synapse.Api.Events.SynapseEventArguments.PlayerSetClassEventArgs ev)
         {
             ev.Player.GetComponent<Scp1499PlayerScript>().IsInDimension = false;
-        }
-
-        //Used by:
-        //C4
-        private void OnDropAmmo(Synapse.Api.Events.SynapseEventArguments.PlayerDropAmmoEventArgs ev)
-        {
-            if (ev.Player.GetComponent<C4PlayerComponent>().ExplodeAll())
-                ev.Allow = false;
         }
 
 
@@ -440,15 +357,6 @@ namespace MoreWeapons
                 }
                 yield return Timing.WaitForSeconds(PluginClass.Scp127Config.ReloadIntervall);
             }
-        }
-
-        private Quaternion RandomAimcone()
-        {
-            return Quaternion.Euler(
-                UnityEngine.Random.Range(-PluginClass.SGConfig.AimCone, PluginClass.SGConfig.AimCone),
-                UnityEngine.Random.Range(-PluginClass.SGConfig.AimCone, PluginClass.SGConfig.AimCone),
-                UnityEngine.Random.Range(-PluginClass.SGConfig.AimCone, PluginClass.SGConfig.AimCone)
-                );
         }
     }
 }

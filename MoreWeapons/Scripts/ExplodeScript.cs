@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using InventorySystem.Items.Pickups;
+using InventorySystem.Items.ThrowableProjectiles;
+using UnityEngine;
 
 namespace MoreWeapons.Scripts
 {
@@ -8,8 +10,9 @@ namespace MoreWeapons.Scripts
 
         public void OnCollisionEnter(Collision col)
         {
-            if (col.gameObject == owner || col.gameObject.GetComponent<Grenades.Grenade>() != null) return;
-            GetComponent<Grenades.Grenade>().NetworkfuseTime = 0.10000000149011612;
+            if (col.gameObject == owner || GetComponent<ItemPickupBase>() is ExplosionGrenade) return;
+            var grenade = (GetComponent<ItemPickupBase>() as ExplosionGrenade);
+            grenade.DestroySelf();
         }
     }
 }

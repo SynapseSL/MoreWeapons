@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using InventorySystem.Items.Usables;
 using MEC;
 using Synapse.Api;
 using Synapse.Api.Enum;
@@ -33,9 +34,7 @@ namespace MoreWeapons.Scripts
 
                 IsInDimension = false;
 
-
-                player.VanillaInventory._cawi.usableCooldowns[3] = PluginClass.Scp1499Config.Cooldown;
-                player.VanillaInventory._cawi.RpcSetCooldown(3, PluginClass.Scp1499Config.Cooldown);
+                UsableItemsController.GetHandler(player.Hub).PersonalCooldowns[ItemType.SCP268] = PluginClass.Scp1499Config.Cooldown;
 
                 Timing.KillCoroutines(kickcoroutine.ToArray());
             }

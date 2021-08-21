@@ -1,6 +1,6 @@
-﻿using Synapse.Api.Plugin;
-using Synapse;
+﻿using Synapse;
 using Synapse.Api.Items;
+using Synapse.Api.Plugin;
 
 namespace MoreWeapons
 {
@@ -19,9 +19,6 @@ namespace MoreWeapons
         [Config(section = "GrenadeLauncher")]
         public static Configs.GrenadeLauncherConfig GLConfig { get; set; }
 
-        [Config(section = "ShotGun")]
-        public static Configs.ShotGunConfig SGConfig { get; set; }
-
         [Config(section = "Scp-127")]
         public static Configs.Scp127Config Scp127Config { get; set; }
 
@@ -33,9 +30,6 @@ namespace MoreWeapons
 
         [Config(section = "Scp1499")]
         public static Configs.Scp1499Config Scp1499Config { get; set; }
-
-        [Config(section = "C4")]
-        public static Configs.C4Config C4Config { get; set; }
 
         [Config(section = "MedkitGun")]
         public static Configs.MedkitGunConfig MedkitGunConfig { get; set; }
@@ -56,7 +50,7 @@ namespace MoreWeapons
             {
                 ID = (int)CustomItemType.Tranquilizer,
                 Name = "Tranquilizer",
-                BasedItemType = ItemType.GunUSP
+                BasedItemType = ItemType.GunCOM18
             });
 
             Server.Get.ItemManager.RegisterCustomItem(new CustomItemInformation
@@ -64,13 +58,6 @@ namespace MoreWeapons
                 BasedItemType = ItemType.GunLogicer,
                 ID = (int)CustomItemType.GrenadeLauncher,
                 Name = "GrenadeLauncher"
-            });
-
-            Server.Get.ItemManager.RegisterCustomItem(new CustomItemInformation
-            {
-                ID = (int)CustomItemType.ShotGun,
-                Name = "ShotGun",
-                BasedItemType = ItemType.GunUSP,
             });
 
             Server.Get.ItemManager.RegisterCustomItem(new CustomItemInformation
@@ -83,7 +70,7 @@ namespace MoreWeapons
             Server.Get.ItemManager.RegisterCustomItem(new CustomItemInformation
             {
                 ID = (int)CustomItemType.Scp127,
-                BasedItemType = ItemType.GunProject90,
+                BasedItemType = ItemType.GunFSP9,
                 Name = "Scp-127"
             });
 
@@ -103,14 +90,7 @@ namespace MoreWeapons
 
             Server.Get.ItemManager.RegisterCustomItem(new CustomItemInformation
             {
-                BasedItemType = ItemType.GrenadeFrag,
-                ID = (int)CustomItemType.C4,
-                Name = "C4"
-            });
-
-            Server.Get.ItemManager.RegisterCustomItem(new CustomItemInformation
-            {
-                BasedItemType = ItemType.GunMP7,
+                BasedItemType = ItemType.GunFSP9,
                 ID = (int)CustomItemType.MedkitGun,
                 Name = "MedkitGun"
             });

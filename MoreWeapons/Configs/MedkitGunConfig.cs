@@ -1,5 +1,5 @@
-﻿using Synapse.Config;
-using System.ComponentModel;
+﻿using System.ComponentModel;
+using Synapse.Config;
 
 namespace MoreWeapons.Configs
 {

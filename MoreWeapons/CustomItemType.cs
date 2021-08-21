@@ -4,13 +4,12 @@
     {
         Tranquilizer = 50,
         GrenadeLauncher,
-        ShotGun,
-        Sniper,
+
+        Sniper = 53,
         Scp127,
         XlMedkit,
         Scp1499,
-        C4,
-        MedkitGun,
+        MedkitGun = 58,
         VaccinePistole,
 
         //Coming maybe in the Future :D

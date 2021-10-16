@@ -1,5 +1,4 @@
 ﻿using InventorySystem.Items.Pickups;
-using InventorySystem.Items.ThrowableProjectiles;
 using UnityEngine;
 
 namespace MoreWeapons.Scripts
@@ -10,9 +9,8 @@ namespace MoreWeapons.Scripts
 
         public void OnCollisionEnter(Collision col)
         {
-            if (col.gameObject == owner || GetComponent<ItemPickupBase>() is ExplosionGrenade) return;
-            var grenade = (GetComponent<ItemPickupBase>() as ExplosionGrenade);
-            grenade.DestroySelf();
+            if (col.gameObject == owner) return;
+            GetComponent<ItemPickupBase>().GetSynapseItem().Destroy();
         }
     }
 }

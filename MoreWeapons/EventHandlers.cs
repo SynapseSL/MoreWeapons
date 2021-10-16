@@ -119,7 +119,7 @@ namespace MoreWeapons
                     if (ev.Target != null)
                     {
                         ev.Target.GetComponent<TranquilizerPlayerScript>().Stun();
-                        ev.Player.Connection.Send(new RequestMessage(0, RequestType.Hitmarker));
+                        Hitmarker.SendHitmarker(ev.Player.Connection, 1f);
                     }
                     break;
 
@@ -131,7 +131,7 @@ namespace MoreWeapons
                     if (ev.Target != null)
                     {
                         ev.Target.Heal(PluginClass.MedkitGunConfig.HealAmount);
-                        ev.Player.Connection.Send(new RequestMessage(0, RequestType.Hitmarker));
+                        Hitmarker.SendHitmarker(ev.Player.Connection, 1f);
                     }
                     break;
 
@@ -141,35 +141,17 @@ namespace MoreWeapons
                     ev.Weapon.Durabillity--;
 
                     var defaultItem = InventoryItemLoader.AvailableItems[ItemType.GrenadeHE] as ThrowableItem;
-                    var projectile = UnityEngine.Object.Instantiate<ThrownProjectile>(defaultItem.Projectile, defaultItem.Owner.PlayerCameraReference.position,
-                        defaultItem.Owner.PlayerCameraReference.rotation);
-                    var info = new InventorySystem.Items.Pickups.PickupSyncInfo
-                    {
-                        ItemId = defaultItem.ItemTypeId,
-                        Locked = !defaultItem._repickupable,
-                        Serial = 1,
-                        Weight = defaultItem.Weight,
-                        Position = projectile.transform.position,
-                        Rotation = new LowPrecisionQuaternion(projectile.transform.rotation)
-                    };
-                    projectile.NetworkInfo = info;
-                    projectile.PreviousOwner = new Footprinting.Footprint(ev.Player.Hub);
+                    var settings = defaultItem.FullThrowSettings;
+                    var reference = ev.Player.CameraReference;
+                    var a2 = reference.forward + (reference.up * settings.UpwardsFactor) *
+                        (1f - Mathf.Abs(Vector3.Dot(reference.forward, Vector3.up)));
+                    var velocity = ev.Player.PlayerMovementSync.PlayerVelocity + a2 * 20 * PluginClass.GLConfig.ForceMultiplier;
 
-                    NetworkServer.Spawn(projectile.gameObject);
-
-                    projectile.InfoReceived(default, info);
-
-                    if(projectile.TryGetComponent<Rigidbody>(out var rb))
-                    {
-                        var settings = defaultItem.FullThrowSettings;
-                        defaultItem.PropelBody(rb, settings.StartTorque, settings.StartVelocity * PluginClass.GLConfig.ForceMultiplier, settings.UpwardsFactor);
-                    }
-
-                    projectile.ServerActivate();
+                    var grenade = Map.Get.SpawnGrenade(ev.Player.CameraReference.position, velocity, 3, GrenadeType.Grenade, ev.Player);
 
                     if (PluginClass.GLConfig.ExplodeOnCollison)
                     {
-                        var script = projectile.gameObject.AddComponent<ExplodeScript>();
+                        var script = grenade.Throwable.ThrowableItem.gameObject.AddComponent<ExplodeScript>();
                         script.owner = ev.Player.gameObject;
                     }
                     break;
@@ -181,7 +163,7 @@ namespace MoreWeapons
 
                     if (ev.Target != null)
                     {
-                        ev.Player.Connection.Send(new RequestMessage(0, RequestType.Hitmarker));
+                        Hitmarker.SendHitmarker(ev.Player.Connection, 1f);
 
                         if (ev.Target.RoleID == (int)RoleType.Scp0492)
                         {

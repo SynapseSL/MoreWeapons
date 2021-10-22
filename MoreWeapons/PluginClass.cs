@@ -1,6 +1,7 @@
 ﻿using Synapse;
 using Synapse.Api.Items;
 using Synapse.Api.Plugin;
+using Synapse.Translation;
 
 namespace MoreWeapons
 {
@@ -11,7 +12,7 @@ namespace MoreWeapons
         LoadPriority = 100,
         SynapseMajor = 2,
         SynapseMinor = 7,
-        SynapsePatch = 0,
+        SynapsePatch = 2,
         Version = "1.3.1"
         )]
     public class PluginClass : AbstractPlugin
@@ -37,11 +38,29 @@ namespace MoreWeapons
         [Config(section = "VaccinePistole")]
         public static Configs.VaccinePistoleConfig VPConfig { get; set; }
 
+        [SynapseTranslation]
+        public new static SynapseTranslation<PluginTranslation> Translation { get; set; }
+
         public override void Load()
         {
             RegisterItems();
+            RegisterTranslation();
 
             new EventHandlers();
+        }
+
+        private void RegisterTranslation()
+        {
+            Translation.AddTranslation(new PluginTranslation());
+            Translation.AddTranslation(new PluginTranslation
+            {
+                Drop1499 = "Du kannst SCP-1499 im moment nicht wegwerfen",
+                Equipped = "Du hast ein(e) %item% ausgerüstet",
+                PickedUp = "Du hast ein(e) %item% aufgehoben",
+                Pocket1499 = "In dieser Dimension kannst du SCP-1499 nicht benutzen",
+                Entered1499 = "Du hast die Dimension von SCP-1499 betreten",
+                Tranquilized = "Du wurdest von der Tranquilizer betäubt und kannst dich nicht bewegen"
+            }, "GERMAN");
         }
 
         private void RegisterItems()

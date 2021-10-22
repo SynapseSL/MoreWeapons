@@ -21,7 +21,7 @@ namespace MoreWeapons.Scripts
         {
             if (PluginClass.TzConfig.BlockedIDs.Any(x => Player.RoleID == x)) yield break;
 
-            Player.GiveTextHint("You are <color=blue>stuned</color> by a <color=blue>Tranquilizer</color>");
+            Player.GiveTextHint(PluginClass.Translation.ActiveTranslation.Tranquilized);
 
             Synapse.Api.Ragdoll rag = null;
             if (PluginClass.TzConfig.SpawnRagdoll)
@@ -37,6 +37,8 @@ namespace MoreWeapons.Scripts
             Stuned = true;
 
             yield return Timing.WaitForSeconds(Random.Range(PluginClass.TzConfig.MinStunTime, PluginClass.TzConfig.MaxStunTime));
+
+            if (Player == null) yield break;
 
             if (rag != null) rag.Destroy();
             Player.Position = pos;

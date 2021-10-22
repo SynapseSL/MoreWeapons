@@ -1,16 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using InventorySystem;
-using InventorySystem.Items.Firearms.BasicMessages;
 using InventorySystem.Items.ThrowableProjectiles;
 using MEC;
-using Mirror;
 using MoreWeapons.Scripts;
 using Synapse;
 using Synapse.Api;
 using Synapse.Api.Enum;
 using Synapse.Api.Events.SynapseEventArguments;
-using Synapse.Api.Items;
 using Synapse.Config;
 using UnityEngine;
 
@@ -24,7 +21,6 @@ namespace MoreWeapons
         {
             Server.Get.Events.Player.PlayerChangeItemEvent += OnEquip;
             Server.Get.Events.Player.LoadComponentsEvent += OnLoadComponents;
-            Server.Get.Events.Player.PlayerDamageEvent += OnDamage;
             Server.Get.Events.Player.PlayerDropItemEvent += OnDrop;
             Server.Get.Events.Player.PlayerItemUseEvent += OnItemUse;
             Server.Get.Events.Player.PlayerPickUpItemEvent += OnPickup;
@@ -41,13 +37,13 @@ namespace MoreWeapons
         private void OnPickup(PlayerPickUpItemEventArgs ev)
         {
             if (AllTypes.Any(x => (int)x == ev.Item.ID))
-                ev.Player.GiveTextHint($"You have picked up a {(CustomItemType)ev.Item.ID}");
+                ev.Player.GiveTextHint(PluginClass.Translation.ActiveTranslation.PickedUp.Replace("%item%", $"{(CustomItemType)ev.Item.ID}"));
         }
 
         private void OnEquip(Synapse.Api.Events.SynapseEventArguments.PlayerChangeItemEventArgs ev)
         {
             if (AllTypes.Any(x => (int)x == ev.NewItem.ID))
-                ev.Player.GiveTextHint($"You have equipped {(CustomItemType)ev.NewItem.ID}");
+                ev.Player.GiveTextHint(PluginClass.Translation.ActiveTranslation.Equipped.Replace("%item%", $"{(CustomItemType)ev.NewItem.ID}"));
         }
 
         //Used by:
@@ -90,7 +86,7 @@ namespace MoreWeapons
             {
                 case (int)CustomItemType.Scp1499 when ev.Player.GetComponent<Scp1499PlayerScript>().IsInDimension:
                     ev.Allow = false;
-                    ev.Player.GiveTextHint("You can't currently drop Scp1499");
+                    ev.Player.GiveTextHint(PluginClass.Translation.ActiveTranslation.Drop1499);
                     break;
             }
         }
@@ -147,7 +143,7 @@ namespace MoreWeapons
                         (1f - Mathf.Abs(Vector3.Dot(reference.forward, Vector3.up)));
                     var velocity = ev.Player.PlayerMovementSync.PlayerVelocity + a2 * 20 * PluginClass.GLConfig.ForceMultiplier;
 
-                    var grenade = Map.Get.SpawnGrenade(ev.Player.CameraReference.position, velocity, 3, GrenadeType.Grenade, ev.Player);
+                    var grenade = Map.Get.SpawnGrenade(ev.Player.CameraReference.position, velocity, PluginClass.GLConfig.GrenadeFuseTime, GrenadeType.Grenade, ev.Player);
 
                     if (PluginClass.GLConfig.ExplodeOnCollison)
                     {
@@ -168,10 +164,27 @@ namespace MoreWeapons
                         if (ev.Target.RoleID == (int)RoleType.Scp0492)
                         {
                             var pos = ev.Target.Position;
-                            ev.Target.RoleID = PluginClass.VPConfig.ReplaceRoles.ElementAt(UnityEngine.Random.Range(0, PluginClass.VPConfig.ReplaceRoles.Count));
+                            ev.Target.ChangeRoleAtPosition(PluginClass.VPConfig.ReplaceRoles.ElementAt(UnityEngine.Random.Range(0, PluginClass.VPConfig.ReplaceRoles.Count)));
                             ev.Target.Position = pos;
                         }
-                        else ev.Target.Hurt(PluginClass.VPConfig.Damage);
+                        else
+                        {
+                            ev.Target.Hurt(PluginClass.VPConfig.Heal);
+                            ev.Target.PlayerEffectsController.UseMedicalItem(ItemType.SCP500);
+                        }
+                    }
+                    break;
+
+                case (int)CustomItemType.Sniper:
+                    ev.Player.PlayerInteract.OnInteract();
+                    ev.Allow = false;
+                    ev.Weapon.Durabillity--;
+
+                    if(ev.Target != null)
+                    {
+                        Hitmarker.SendHitmarker(ev.Player.Connection, 1f);
+
+                        ev.Target.Hurt((int)(ev.Target.RoleType == RoleType.Scp106 ? PluginClass.SnConfig.Damage / 10f : PluginClass.SnConfig.Damage));
                     }
                     break;
             }
@@ -288,27 +301,13 @@ namespace MoreWeapons
         private void OnRestart() => Timing.KillCoroutines(scp127coroutine);
 
         //Used by:
-        //Sniper
-        private void OnDamage(PlayerDamageEventArgs ev)
-        {
-            if (ev.Killer == null || ev.Killer.ItemInHand == null || ev.Victim == null) return;
-
-            switch (ev.Killer.ItemInHand.ID)
-            {
-                case (int)CustomItemType.Sniper when ev.HitInfo.Tool == DamageTypes.E11SR:
-                    ev.DamageAmount = ev.Victim.RoleType == RoleType.Scp106 ? PluginClass.SnConfig.Damage / 10f : PluginClass.SnConfig.Damage;
-                    break;
-            }
-        }
-
-        //Used by:
         //SCP-1499
         private void OnWaiting()
         {
-            if (PluginClass.Scp1499Config.SpawnDoor)
+            if (PluginClass.Scp1499Config.SpawnWorkbench)
             {
-                var door = Synapse.Api.Door.SpawnDoorVariant(doorSpawn.Parse().Position, Synapse.Api.Map.Get.GetRoom(MapGeneration.RoomName.Hcz049).GameObject.transform.rotation);
-                door.GameObject.GetComponent<Interactables.Interobjects.DoorUtils.DoorVariant>().ServerChangeLock(Interactables.Interobjects.DoorUtils.DoorLockReason.SpecialDoorFeature, true);
+                var point = workbenchSpawn.Parse();
+                WorkStation.CreateWorkStation(point.Position, point.Room.GameObject.transform.rotation.eulerAngles, new Vector3(3, 3, 0.1f));
             }
         }
 
@@ -320,9 +319,9 @@ namespace MoreWeapons
         }
 
 
-        private readonly SerializedMapPoint doorSpawn = new SerializedMapPoint("HCZ_049", -6.683522f, 264.0f, 24.09575f);
+        private readonly SerializedMapPoint workbenchSpawn = new SerializedMapPoint("HCZ_049", -6.5f, 259.5f, 24f);
 
-        private MEC.CoroutineHandle scp127coroutine;
+        private CoroutineHandle scp127coroutine;
 
         private IEnumerator<float> Refill()
         {

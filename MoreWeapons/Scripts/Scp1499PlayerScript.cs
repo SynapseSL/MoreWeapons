@@ -9,7 +9,7 @@ namespace MoreWeapons.Scripts
 {
     public class Scp1499PlayerScript : MonoBehaviour
     {
-        private readonly Synapse.Api.Player player;
+        private readonly Player player;
 
         public Scp1499PlayerScript() => player = GetComponent<Player>();
 
@@ -19,9 +19,9 @@ namespace MoreWeapons.Scripts
 
         public void Use1499()
         {
-            if (player.Zone == Synapse.Api.Enum.ZoneType.Pocket)
+            if (player.Zone == ZoneType.Pocket)
             {
-                player.GiveTextHint("You can't use it right now");
+                player.GiveTextHint(PluginClass.Translation.ActiveTranslation.Pocket1499);
                 return;
             }
 
@@ -40,7 +40,7 @@ namespace MoreWeapons.Scripts
             }
             else
             {
-                player.GiveTextHint("You have entered the dimension of Scp1499");
+                player.GiveTextHint(PluginClass.Translation.ActiveTranslation.Entered1499);
                 OldPosition = player.Position;
                 player.Position = PluginClass.Scp1499Config.Scp1499Dimension.Parse().Position;
 

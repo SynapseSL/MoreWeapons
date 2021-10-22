@@ -7,16 +7,17 @@ namespace MoreWeapons.Configs
     public class VaccinePistoleConfig : AbstractConfigSection
     {
         [Description("The Roles that SCP-049-2 can be replaced with when hit by the VaccinePistole")]
-        public List<int> ReplaceRoles { get; set; } = new List<int>
+        public List<RoleType> ReplaceRoles { get; set; } = new List<RoleType>
         {
-            (int)RoleType.ClassD,
-            (int)RoleType.Scientist
+            RoleType.ClassD,
+            RoleType.Scientist,
+            RoleType.FacilityGuard,
         };
 
-        [Description("The amount of Damage when the Target is not SCP-049-2")]
-        public int Damage { get; set; } = 10;
+        [Description("The amount of Heal when the Target is not SCP-049-2")]
+        public int Heal { get; set; } = 150;
 
-        [Description("The Amount of Adrenaline that can be loaded into the VaccinePistole")]
+        [Description("The Amount of SCP-500 that can be loaded into the VaccinePistole")]
         public int MagazineSize { get; set; }
     }
 }

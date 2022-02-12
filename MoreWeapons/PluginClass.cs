@@ -11,9 +11,9 @@ namespace MoreWeapons
         Description = "A Plugin that adds new Weapons & Items to the Game",
         LoadPriority = 100,
         SynapseMajor = 2,
-        SynapseMinor = 7,
-        SynapsePatch = 2,
-        Version = "1.3.1"
+        SynapseMinor = 8,
+        SynapsePatch = 3,
+        Version = "1.3.2"
         )]
     public class PluginClass : AbstractPlugin
     {

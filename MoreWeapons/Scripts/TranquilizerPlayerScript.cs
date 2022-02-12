@@ -25,7 +25,7 @@ namespace MoreWeapons.Scripts
 
             Synapse.Api.Ragdoll rag = null;
             if (PluginClass.TzConfig.SpawnRagdoll)
-                rag = Synapse.Api.Ragdoll.CreateRagdoll(Player.RoleType, Player.Position, Quaternion.identity, Vector3.zero, new PlayerStats.HitInfo(), false, Player);
+                rag = Synapse.Api.Ragdoll.CreateRagdoll(Player.RoleType, Player.NickName, Player.Position, Quaternion.identity, DamageType.Unknown);
 
             if (PluginClass.TzConfig.DropInventory)
                 Player.Inventory.DropAll();

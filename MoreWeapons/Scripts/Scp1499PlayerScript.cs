@@ -34,7 +34,7 @@ namespace MoreWeapons.Scripts
 
                 IsInDimension = false;
 
-                UsableItemsController.GetHandler(player.Hub).PersonalCooldowns[ItemType.SCP268] = PluginClass.Scp1499Config.Cooldown;
+                (player.ItemInHand?.ItemBase as Scp268)?.ServerSetGlobalItemCooldown(PluginClass.Scp1499Config.Cooldown);
 
                 Timing.KillCoroutines(kickcoroutine.ToArray());
             }

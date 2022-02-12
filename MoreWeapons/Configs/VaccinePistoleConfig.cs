@@ -18,6 +18,6 @@ namespace MoreWeapons.Configs
         public int Heal { get; set; } = 150;
 
         [Description("The Amount of SCP-500 that can be loaded into the VaccinePistole")]
-        public int MagazineSize { get; set; }
+        public int MagazineSize { get; set; } = 3;
     }
 }

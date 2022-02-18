@@ -65,7 +65,7 @@ namespace MoreWeapons
                     break;
 
                 case (int)CustomItemType.Scp1499 when ev.State == Synapse.Api.Events.SynapseEventArguments.ItemInteractState.Finalizing:
-                    ev.Player.GetComponent<Scp1499PlayerScript>().Use1499();
+                    ev.Player.GetComponent<Scp1499PlayerScript>().Use1499(ev.CurrentItem);
                     ev.Allow = false;
                     break;
             }

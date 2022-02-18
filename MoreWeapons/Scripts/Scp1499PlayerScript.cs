@@ -3,6 +3,7 @@ using InventorySystem.Items.Usables;
 using MEC;
 using Synapse.Api;
 using Synapse.Api.Enum;
+using Synapse.Api.Items;
 using UnityEngine;
 
 namespace MoreWeapons.Scripts
@@ -17,7 +18,7 @@ namespace MoreWeapons.Scripts
 
         public bool IsInDimension { get; set; } = false;
 
-        public void Use1499()
+        public void Use1499(SynapseItem scp1499)
         {
             if (player.Zone == ZoneType.Pocket)
             {
@@ -34,7 +35,7 @@ namespace MoreWeapons.Scripts
 
                 IsInDimension = false;
 
-                (player.ItemInHand?.ItemBase as Scp268)?.ServerSetGlobalItemCooldown(PluginClass.Scp1499Config.Cooldown);
+                (scp1499?.ItemBase as Scp268)?.ServerSetGlobalItemCooldown(PluginClass.Scp1499Config.Cooldown);
 
                 Timing.KillCoroutines(kickcoroutine.ToArray());
             }
@@ -44,25 +45,25 @@ namespace MoreWeapons.Scripts
                 OldPosition = player.Position;
                 player.Position = PluginClass.Scp1499Config.Scp1499Dimension.Parse().Position;
 
-                KickOut(PluginClass.Scp1499Config.Scp1499ResidenceTime);
+                KickOut(PluginClass.Scp1499Config.Scp1499ResidenceTime,scp1499);
                 IsInDimension = true;
             }
         }
 
-        public void KickOut(float delay)
+        public void KickOut(float delay, SynapseItem scp1499)
         {
             if (delay < 0f) return;
-            kickcoroutine.Add(Timing.RunCoroutine(KickOutOfScp1499(delay)));
+            kickcoroutine.Add(Timing.RunCoroutine(KickOutOfScp1499(delay,scp1499)));
         }
 
         private readonly List<CoroutineHandle> kickcoroutine = new List<CoroutineHandle>();
 
-        private IEnumerator<float> KickOutOfScp1499(float delay)
+        private IEnumerator<float> KickOutOfScp1499(float delay, SynapseItem scp1499)
         {
             yield return Timing.WaitForSeconds(delay);
 
             if (IsInDimension)
-                Use1499();
+                Use1499(scp1499);
         }
     }
 }

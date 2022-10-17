@@ -33,7 +33,8 @@ public class VaccinePistol : MoreWeaponsItemHandler
         }
         else
         {
-            ev.Target.Heal(MoreWeapons.VPConfig.Heal);   
+            ev.Target.Heal(MoreWeapons.VPConfig.Heal);
+            ev.Target.PlayerEffectsController.UseMedicalItem(ItemType.SCP500);
         }
         Hitmarker.SendHitmarker(ev.Player.Connection, 1f);
     }

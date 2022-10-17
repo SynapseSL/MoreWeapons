@@ -5,7 +5,7 @@ using Syml;
 
 namespace MoreWeapons.Configs;
 
-//[Automatic]
+[Automatic]
 [DocumentSection("VaccinePistol")]
 public class VaccinePistolConfig : IDocumentSection
 {

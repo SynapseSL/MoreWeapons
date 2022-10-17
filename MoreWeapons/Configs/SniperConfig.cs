@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel;
+using Neuron.Core.Meta;
 using Syml;
 
 namespace MoreWeapons.Configs;
 
-//[Automatic]
+[Automatic]
 [DocumentSection("Sniper")]
 public class SniperConfig : IDocumentSection
 {

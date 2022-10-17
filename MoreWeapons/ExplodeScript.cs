@@ -1,7 +1,7 @@
 ﻿using InventorySystem.Items.Pickups;
 using UnityEngine;
 
-namespace MoreWeapons.Scripts
+namespace MoreWeapons
 {
     public class ExplodeScript : MonoBehaviour
     {
@@ -10,7 +10,7 @@ namespace MoreWeapons.Scripts
         public void OnCollisionEnter(Collision col)
         {
             if (col.gameObject == owner) return;
-            GetComponent<ItemPickupBase>().GetSynapseItem().Destroy();
+            GetComponent<ItemPickupBase>().GetItem().Destroy();
         }
     }
 }

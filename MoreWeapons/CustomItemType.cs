@@ -1,17 +1,15 @@
 ﻿namespace MoreWeapons
 {
-    public enum CustomItemType : int
+    public enum CustomItemType
     {
-        Tranquilizer = 50,
-        GrenadeLauncher,
-
-        Sniper = 53,
+        GrenadeLauncher = 100,
+        Tranquilizer,
+        Sniper,
         Scp127,
         XlMedkit,
         Scp1499,
-
-        MedkitGun = 58,
-        VaccinePistole,
+        MedkitGun,
+        VaccinePistol,
 
         //Coming maybe in the Future :D
         //MolotovCocktail,

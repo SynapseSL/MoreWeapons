@@ -1,95 +1,105 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using InventorySystem;
-using InventorySystem.Items.ThrowableProjectiles;
-using MEC;
-using MoreWeapons.Scripts;
-using Synapse;
-using Synapse.Api;
-using Synapse.Api.Enum;
-using Synapse.Api.Events.SynapseEventArguments;
-using Synapse.Config;
+﻿using Neuron.Core.Events;
+using Synapse3.SynapseModule.Events;
+using Synapse3.SynapseModule.Map.Rooms;
 using UnityEngine;
 
-namespace MoreWeapons
+namespace MoreWeapons;
+
+public class EventHandlers : Listener
 {
+    private readonly RoomService _roomService;
+    private readonly MoreWeapons _moreWeapons;
+    
+    public SynapseCustomRoom Scp1499Dimension { get; private set; }
+
+    public EventHandlers(PlayerEvents playerEvents, ItemEvents itemEvents, ScpEvents scpEvents,
+        RoomService roomService, MoreWeapons moreWeapons)
+    {
+        _roomService = roomService;
+        _moreWeapons = moreWeapons;
+        
+        playerEvents.Pickup.Subscribe(PlayerInteract);
+        playerEvents.ChangeItem.Subscribe(PlayerInteract);
+        playerEvents.DropAmmo.Subscribe(PlayerInteract);
+        playerEvents.DropItem.Subscribe(PlayerInteract);
+        playerEvents.FreePlayer.Subscribe(PlayerInteract);
+        playerEvents.GeneratorInteract.Subscribe(PlayerInteract);
+        playerEvents.LockerUse.Subscribe(PlayerInteract);
+        playerEvents.StartWarhead.Subscribe(PlayerInteract);
+        playerEvents.CallVanillaElevator.Subscribe(PlayerInteract);
+        playerEvents.OpenWarheadButton.Subscribe(PlayerInteract);
+        playerEvents.StartWorkStation.Subscribe(PlayerInteract);
+        itemEvents.BasicInteract.Subscribe(PlayerInteract);
+        scpEvents.Scp049Attack.Subscribe(ScpAttack);
+        scpEvents.Scp0492Attack.Subscribe(ScpAttack);
+        scpEvents.Scp096Attack.Subscribe(ScpAttack);
+        scpEvents.Scp106Attack.Subscribe(ScpAttack);
+        scpEvents.Scp173Attack.Subscribe(ScpAttack);
+        scpEvents.Scp939Attack.Subscribe(ScpAttack);
+    }
+
+    private void ScpAttack(ScpAttackEvent ev)
+    {
+        if (ev.Scp?.GetComponent<MoreWeaponsScript>()?.CurrentlyStunned == true)
+        {
+            ev.Allow = false;
+        }
+    }
+
+    private void PlayerInteract(PlayerInteractEvent ev)
+    {
+        if (ev.Player?.GetComponent<MoreWeaponsScript>()?.CurrentlyStunned == true)
+        {
+            ev.Allow = false;
+        }
+    }
+
+    [EventHandler]
+    public void SetClass(SimpleSetClassEvent ev) => ev.Player.GetComponent<MoreWeaponsScript>().In1499Dimension = false;
+
+    [EventHandler]
+    public void Waiting(RoundWaitingEvent ev)
+    {
+        Scp1499Dimension = _roomService.SpawnCustomRoom(1499, _moreWeapons.Scp1499Config.DimensionPosition);
+    }
+
+    [EventHandler]
+    public void Revive(ReviveEvent ev)
+    {
+        if (ev.Scp049?.GetComponent<MoreWeaponsScript>()?.CurrentlyStunned == true)
+        {
+            ev.Allow = false;
+        }
+    }
+
+    [EventHandler]
+    public void DoorInteract(DoorInteractEvent ev)
+    {
+        if (ev.Player.GetComponent<MoreWeaponsScript>().CurrentlyStunned)
+        {
+            ev.Allow = false;
+            ev.PlayDeniedSound = false;
+        }
+    }
+
+    [EventHandler]
+    public void LoadComponent(LoadComponentEvent ev) => ev.AddComponent<MoreWeaponsScript>();
+
+    [EventHandler]
+    public void Test(KeyPressEvent ev)
+    {
+        switch (ev.KeyCode)
+        {
+            case KeyCode.Alpha1:
+                ev.Player.GetComponent<MoreWeaponsScript>().Stun();
+                break;
+        }
+    }
+}
+    
+    /*
     public class EventHandlers
     {
-        public CustomItemType[] AllTypes { get; private set; }
-
-        public EventHandlers()
-        {
-            Server.Get.Events.Player.PlayerChangeItemEvent += OnEquip;
-            Server.Get.Events.Player.LoadComponentsEvent += OnLoadComponents;
-            Server.Get.Events.Player.PlayerDropItemEvent += OnDrop;
-            Server.Get.Events.Player.PlayerItemUseEvent += OnItemUse;
-            Server.Get.Events.Player.PlayerPickUpItemEvent += OnPickup;
-            Server.Get.Events.Player.PlayerReloadEvent += OnReload;
-            Server.Get.Events.Player.PlayerSetClassEvent += OnSetClass;
-            Server.Get.Events.Player.PlayerShootEvent += OnShoot;
-            Server.Get.Events.Round.RoundRestartEvent += OnRestart;
-            Server.Get.Events.Round.RoundStartEvent += OnStart;
-            Server.Get.Events.Round.WaitingForPlayersEvent += OnWaiting;
-
-            AllTypes = (CustomItemType[])typeof(CustomItemType).GetEnumValues();
-        }
-
-        private void OnPickup(PlayerPickUpItemEventArgs ev)
-        {
-            if (AllTypes.Any(x => (int)x == ev.Item.ID))
-                ev.Player.GiveTextHint(PluginClass.Translation.ActiveTranslation.PickedUp.Replace("%item%", $"{(CustomItemType)ev.Item.ID}"));
-        }
-
-        private void OnEquip(Synapse.Api.Events.SynapseEventArguments.PlayerChangeItemEventArgs ev)
-        {
-            if (AllTypes.Any(x => (int)x == ev.NewItem.ID))
-                ev.Player.GiveTextHint(PluginClass.Translation.ActiveTranslation.Equipped.Replace("%item%", $"{(CustomItemType)ev.NewItem.ID}"));
-        }
-
-        //Used by:
-        //Tranquilizer
-        //XLMedkit
-        //SCP-1499
-        private void OnItemUse(PlayerItemInteractEventArgs ev)
-        {
-            if (ev.Player.GetComponent<TranquilizerPlayerScript>().Stuned)
-            {
-                ev.Allow = false;
-                return;
-            }
-
-            switch (ev.CurrentItem?.ID)
-            {
-                case (int)CustomItemType.XlMedkit when ev.State == Synapse.Api.Events.SynapseEventArguments.ItemInteractState.Finalizing:
-                    ev.Player.Inventory.AddItem(ItemType.Medkit);
-                    break;
-
-                case (int)CustomItemType.Scp1499 when ev.State == Synapse.Api.Events.SynapseEventArguments.ItemInteractState.Finalizing:
-                    ev.Player.GetComponent<Scp1499PlayerScript>().Use1499(ev.CurrentItem);
-                    ev.Allow = false;
-                    break;
-            }
-        }
-
-        //Used by:
-        //Tranquilizer
-        //SCP-1499
-        private void OnDrop(PlayerDropItemEventArgs ev)
-        {
-            if (ev.Player.GetComponent<TranquilizerPlayerScript>().Stuned)
-            {
-                ev.Allow = false;
-                return;
-            }
-
-            switch (ev.Item?.ID)
-            {
-                case (int)CustomItemType.Scp1499 when ev.Player.GetComponent<Scp1499PlayerScript>().IsInDimension:
-                    ev.Allow = false;
-                    ev.Player.GiveTextHint(PluginClass.Translation.ActiveTranslation.Drop1499);
-                    break;
-            }
-        }
 
         //Used by:
         //Tranquilizer
@@ -98,27 +108,8 @@ namespace MoreWeapons
         //VaccinePistole
         private void OnShoot(PlayerShootEventArgs ev)
         {
-            if (ev.Player.GetComponent<TranquilizerPlayerScript>().Stuned)
-            {
-                ev.Allow = false;
-                return;
-            }
-
             switch (ev.Weapon?.ID)
             {
-                case (int)CustomItemType.Tranquilizer:
-
-                    ev.Player.PlayerInteract.OnInteract();
-                    ev.Allow = false;
-                    ev.Weapon.Durabillity--;
-
-                    if (ev.Target != null)
-                    {
-                        ev.Target.GetComponent<TranquilizerPlayerScript>().Stun();
-                        Hitmarker.SendHitmarker(ev.Player.Connection, 1f);
-                    }
-                    break;
-
                 case (int)CustomItemType.MedkitGun:
                     ev.Player.PlayerInteract.OnInteract();
                     ev.Allow = false;
@@ -131,28 +122,7 @@ namespace MoreWeapons
                     }
                     break;
 
-                case (int)CustomItemType.GrenadeLauncher:
-                    ev.Player.PlayerInteract.OnInteract();
-                    ev.Allow = false;
-                    ev.Weapon.Durabillity--;
-
-                    var defaultItem = InventoryItemLoader.AvailableItems[ItemType.GrenadeHE] as ThrowableItem;
-                    var settings = defaultItem.FullThrowSettings;
-                    var reference = ev.Player.CameraReference;
-                    var a2 = reference.forward + (reference.up * settings.UpwardsFactor) *
-                        (1f - Mathf.Abs(Vector3.Dot(reference.forward, Vector3.up)));
-                    var velocity = ev.Player.PlayerMovementSync.PlayerVelocity + a2 * 20 * PluginClass.GLConfig.ForceMultiplier;
-
-                    var grenade = Map.Get.SpawnGrenade(ev.Player.CameraReference.position, velocity, PluginClass.GLConfig.GrenadeFuseTime, GrenadeType.Grenade, ev.Player);
-
-                    if (PluginClass.GLConfig.ExplodeOnCollison)
-                    {
-                        var script = grenade.Throwable.ThrowableItem.gameObject.AddComponent<ExplodeScript>();
-                        script.owner = ev.Player.gameObject;
-                    }
-                    break;
-
-                case (int)CustomItemType.VaccinePistole:
+                case (int)CustomItemType.VaccinePistol:
                     ev.Player.PlayerInteract.OnInteract();
                     ev.Allow = false;
                     ev.Weapon.Durabillity--;
@@ -164,7 +134,7 @@ namespace MoreWeapons
                         if (ev.Target.RoleID == (int)RoleType.Scp0492)
                         {
                             var pos = ev.Target.Position;
-                            ev.Target.ChangeRoleAtPosition(PluginClass.VPConfig.ReplaceRoles.ElementAt(UnityEngine.Random.Range(0, PluginClass.VPConfig.ReplaceRoles.Count)));
+                            ev.Target.ChangeRoleAtPosition(PluginClass.VPConfig.ReplaceRoles.ElementAt(Random.Range(0, PluginClass.VPConfig.ReplaceRoles.Count)));
                             ev.Target.Position = pos;
                         }
                         else
@@ -172,19 +142,6 @@ namespace MoreWeapons
                             ev.Target.Hurt(PluginClass.VPConfig.Heal);
                             ev.Target.PlayerEffectsController.UseMedicalItem(ItemType.SCP500);
                         }
-                    }
-                    break;
-
-                case (int)CustomItemType.Sniper:
-                    ev.Player.PlayerInteract.OnInteract();
-                    ev.Allow = false;
-                    ev.Weapon.Durabillity--;
-
-                    if(ev.Target != null)
-                    {
-                        Hitmarker.SendHitmarker(ev.Player.Connection, 1f);
-
-                        ev.Target.Hurt((int)(ev.Target.RoleType == RoleType.Scp106 ? PluginClass.SnConfig.Damage / 10f : PluginClass.SnConfig.Damage));
                     }
                     break;
             }
@@ -201,19 +158,6 @@ namespace MoreWeapons
         {
             switch (ev.Item?.ID)
             {
-                case (int)CustomItemType.Tranquilizer:
-                    ev.Allow = false;
-
-                    if (ev.Item.Durabillity >= PluginClass.TzConfig.MagazineSize || !PluginClass.TzConfig.Reloadable) return;
-
-                    var reloadAmount = PluginClass.TzConfig.MagazineSize - ev.Item.Durabillity;
-
-                    if (ev.Player.AmmoBox[AmmoType.Ammo9x19] < reloadAmount * PluginClass.TzConfig.AmooNeededForOneShoot)
-                        reloadAmount = ev.Player.AmmoBox[AmmoType.Ammo9x19] / PluginClass.TzConfig.AmooNeededForOneShoot;
-
-                    ev.Item.Durabillity += reloadAmount;
-                    ev.Player.AmmoBox[AmmoType.Ammo9x19] -= (ushort)(reloadAmount * PluginClass.TzConfig.AmooNeededForOneShoot);
-                    break;
 
                 case (int)CustomItemType.MedkitGun:
                     ev.Allow = false;
@@ -231,41 +175,7 @@ namespace MoreWeapons
                     }
                     break;
 
-                case (int)CustomItemType.Scp127:
-                    ev.Allow = false;
-                    break;
-
-                case (int)CustomItemType.Sniper:
-                    ev.Allow = false;
-
-                    if (ev.Item.Durabillity >= PluginClass.SnConfig.MagazineSize) return;
-
-                    reloadAmount = PluginClass.SnConfig.MagazineSize - ev.Item.Durabillity;
-
-                    if (ev.Player.AmmoBox[AmmoType.Ammo556x45] < reloadAmount * PluginClass.SnConfig.AmooNeededForOneShoot)
-                        reloadAmount = ev.Player.AmmoBox[AmmoType.Ammo556x45] / PluginClass.SnConfig.AmooNeededForOneShoot;
-
-                    ev.Item.Durabillity += reloadAmount;
-                    ev.Player.AmmoBox[AmmoType.Ammo556x45] -= (ushort)(reloadAmount * PluginClass.SnConfig.AmooNeededForOneShoot);
-                    break;
-
-                case (int)CustomItemType.GrenadeLauncher:
-                    ev.Allow = false;
-
-                    if (!PluginClass.GLConfig.CanBeReloaded)
-                        return;
-
-                    foreach (var grenade in ev.Player.Inventory.Items.Where(x => x.ID == (int)ItemType.GrenadeHE))
-                    {
-                        if (ev.Item.Durabillity >= PluginClass.GLConfig.MagazineSize)
-                            return;
-
-                        grenade.Destroy();
-                        ev.Item.Durabillity++;
-                    }
-                    break;
-
-                case (int)CustomItemType.VaccinePistole:
+                case (int)CustomItemType.VaccinePistol:
                     ev.Allow = false;
 
                     foreach (var scp500 in ev.Player.Inventory.Items.Where(x => x.ID == (int)ItemType.SCP500))
@@ -279,65 +189,5 @@ namespace MoreWeapons
                     break;
             }
         }
-
-        //Used by:
-        //Tranquilizer
-        //SCP-1499
-        private void OnLoadComponents(LoadComponentEventArgs ev)
-        {
-            if (ev.Player.GetComponent<TranquilizerPlayerScript>() == null)
-                ev.Player.AddComponent<TranquilizerPlayerScript>();
-
-            if (ev.Player.GetComponent<Scp1499PlayerScript>() == null)
-                ev.Player.AddComponent<Scp1499PlayerScript>();
-        }
-
-        //Used by:
-        //SCP-127
-        private void OnStart() => scp127coroutine = Timing.RunCoroutine(Refill());
-
-        //Used by:
-        //SCP-127
-        private void OnRestart() => Timing.KillCoroutines(scp127coroutine);
-
-        //Used by:
-        //SCP-1499
-        private void OnWaiting()
-        {
-            if (PluginClass.Scp1499Config.SpawnWorkbench)
-            {
-                var point = workbenchSpawn.Parse();
-                WorkStation.CreateWorkStation(point.Position, point.Room.GameObject.transform.rotation.eulerAngles, new Vector3(3, 3, 0.1f));
-            }
-        }
-
-        //Used by:
-        //SCP-1499
-        private void OnSetClass(Synapse.Api.Events.SynapseEventArguments.PlayerSetClassEventArgs ev)
-        {
-            ev.Player.GetComponent<Scp1499PlayerScript>().IsInDimension = false;
-        }
-
-
-        private readonly SerializedMapPoint workbenchSpawn = new SerializedMapPoint("HCZ_049", -6.5f, 259.5f, 24f);
-
-        private CoroutineHandle scp127coroutine;
-
-        private IEnumerator<float> Refill()
-        {
-            for (; ; )
-            {
-                foreach (var item in Map.Get.Items.Where(x => x.ID == (int)CustomItemType.Scp127))
-                {
-                    if (item.Durabillity >= PluginClass.Scp127Config.MaxAmmo) continue;
-
-                    var newdur = item.Durabillity + PluginClass.Scp127Config.ReloadAmount;
-
-                    if (newdur >= PluginClass.Scp127Config.MaxAmmo) item.Durabillity = PluginClass.Scp127Config.MaxAmmo;
-                    else item.Durabillity = newdur;
-                }
-                yield return Timing.WaitForSeconds(PluginClass.Scp127Config.ReloadIntervall);
-            }
-        }
     }
-}
+    */

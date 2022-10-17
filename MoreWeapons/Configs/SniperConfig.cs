@@ -1,17 +1,21 @@
 ﻿using System.ComponentModel;
-using Synapse.Config;
+using Syml;
 
-namespace MoreWeapons.Configs
+namespace MoreWeapons.Configs;
+
+//[Automatic]
+[DocumentSection("Sniper")]
+public class SniperConfig : IDocumentSection
 {
-    public class SniperConfig : AbstractConfigSection
-    {
-        [Description("The max amount of bullets that can be in the sniper")]
-        public int MagazineSize { get; set; } = 1;
+    [Description("The max amount of bullets that can be in the sniper")]
+    public int MagazineSize { get; set; } = 1;
 
-        [Description("The Ammount of Ammo5 needed to reload one sniper bullet")]
-        public int AmooNeededForOneShoot { get; set; } = 10;
+    [Description("The Ammount of Ammo5 needed to reload one sniper bullet")]
+    public int AmmoNeededForOneShoot { get; set; } = 10;
 
-        [Description("The damage which the sniper does")]
-        public float Damage { get; set; } = 150f;
-    }
+    [Description("The damage which the sniper does")]
+    public float Damage { get; set; } = 150f;
+
+    [Description("The Delay between the Shots the Player needs to wait")]
+    public float DelayBetweenShots { get; set; } = 5f;
 }
